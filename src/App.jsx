@@ -598,14 +598,15 @@ function PhotoCarousel({ T, images, updateImage }) {
 // ══════════════════════════════════════════════════════════
 // SERVICES
 // ══════════════════════════════════════════════════════════
+const _base = import.meta.env.BASE_URL;
 const SERVICE_IMAGE_MAP = {
-  "内科": "/images/internal_medecine.jpg",
-  "皮膚科": "/images/dermatology.png",
+  "内科": `${_base}images/internal_medecine.jpg`,
+  "皮膚科": `${_base}images/dermatology.png`,
   "歯科": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=900&q=80",
   "美容皮膚科": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=900&q=80",
   "ピル処方": "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=900&q=80",
-  "男性外来": "/images/male_madicine.png",
-  "点滴療法": "/images/drip.png",
+  "男性外来": `${_base}images/male_madicine.png`,
+  "点滴療法": `${_base}images/drip.png`,
 };
 
 function ServicesSection({ T }) {

@@ -14,9 +14,11 @@
 // logoType: "svg" | "image"
 // logoSvg:  SVGコード文字列（typeがsvgの場合）
 // logoUrl:  画像URL（typeがimageの場合）
+const base = import.meta.env.BASE_URL;
+
 export const LOGO = {
   type: "image",     // ← ロゴ変更時はここを編集
-  logoUrl: "/images/logo-transparent.png", // ← 画像ロゴに変える場合はURLをここに
+  logoUrl: `${base}images/logo-transparent.png`,
   clinicName: "うめむら半蔵門内科歯科",
 };
 
@@ -24,20 +26,20 @@ export const LOGO = {
 // 各画像のデフォルトURL。UIから変更した場合はlocalStorageに保存され、
 // こちらのデフォルトより優先されます。
 export const DEFAULT_IMAGES = {
-  hero:       "/images/hero1.jpg",
-  hero2:      "/images/hero2.jpg",
-  hero3:      "/images/hero3.png",
-  hero4:      "/images/hero4.jpg",
-  carousel1:  "/images/carousel1.jpg",
-  carousel2:  "/images/carousel2.JPG",
-  carousel3:  "/images/waiting_room_v4_clean.webp",
-  carousel4:  "/images/carousel4.JPG",
-  carousel6:  "/images/carousel6.jpg",
-  doctor1:    "/images/umemura_statoscope.png",
-  doctor2:    "/images/ito.png",
-  online1:    "/images/online-reservation-illustration.svg",
-  online2:    "/images/online-video-illustration.svg",
-  online3:    "/images/online-prescription-illustration.svg",
+  hero:       `${base}images/hero1.jpg`,
+  hero2:      `${base}images/hero2.jpg`,
+  hero3:      `${base}images/hero3.png`,
+  hero4:      `${base}images/hero4.jpg`,
+  carousel1:  `${base}images/carousel1.jpg`,
+  carousel2:  `${base}images/carousel2.JPG`,
+  carousel3:  `${base}images/waiting_room_v4_clean.webp`,
+  carousel4:  `${base}images/carousel4.JPG`,
+  carousel6:  `${base}images/carousel6.jpg`,
+  doctor1:    `${base}images/umemura_statoscope.png`,
+  doctor2:    `${base}images/ito.png`,
+  online1:    `${base}images/online-reservation-illustration.svg`,
+  online2:    `${base}images/online-video-illustration.svg`,
+  online3:    `${base}images/online-prescription-illustration.svg`,
 };
 
 // ── THEME ─────────────────────────────────────────────────────────
