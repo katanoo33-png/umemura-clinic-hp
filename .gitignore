@@ -1,0 +1,19 @@
+node_modules/
+dist/
+.DS_Store
+*.local
+
+# Local Netlify folder
+.netlify
+
+# Logs
+*.log
+vite-dev.err.log
+vite-dev.log
+vite.stderr.log
+vite.stdout.log
+
+# Temp / local files
+.tmp-chrome
+.pnpm-store
+.gdrive-auth

@@ -1,0 +1,42 @@
+export const COLORS = {
+  silver: {
+    name: "Silver Beige",
+    bg: "#fefefe", bgAlt: "#f8f6f3", bgDark: "#3e3a36",
+    text: "#333", sub: "#888", accent: "#9a8e7f",
+    accentG: "linear-gradient(135deg,#9a8e7f,#7d7265)",
+    card: "#fff", border: "#e8e4de", tag: "#f5f2ed",
+    dkTxt: "#f0ece6", dkSub: "rgba(240,236,230,.6)",
+  },
+  ocean: {
+    name: "Ocean Blue",
+    bg: "#f8fafb", bgAlt: "#eef4f8", bgDark: "#1c3545",
+    text: "#1e3040", sub: "#5a7a8a", accent: "#2a85b5",
+    accentG: "linear-gradient(135deg,#2a85b5,#1a6590)",
+    card: "#fff", border: "#dce8ee", tag: "#eef4f8",
+    dkTxt: "#e8f0f5", dkSub: "rgba(232,240,245,.6)",
+  },
+  dark: {
+    name: "Dark Gold",
+    bg: "#1a1a1a", bgAlt: "#222", bgDark: "#111",
+    text: "#e8e4dc", sub: "#8a857e", accent: "#c9a96e",
+    accentG: "linear-gradient(135deg,#c9a96e,#a88a4e)",
+    card: "#252525", border: "#333", tag: "#2a2a2a",
+    dkTxt: "#e8e4dc", dkSub: "rgba(232,228,220,.5)",
+  },
+  sage: {
+    name: "Fresh Sage",
+    bg: "#f6f9f5", bgAlt: "#ecf2ea", bgDark: "#2d3e2a",
+    text: "#2a3628", sub: "#5a7055", accent: "#5a8f4e",
+    accentG: "linear-gradient(135deg,#5a8f4e,#3d7034)",
+    card: "#fff", border: "#dce6d9", tag: "#ecf2ea",
+    dkTxt: "#e8f0e4", dkSub: "rgba(232,240,228,.6)",
+  },
+  rose: {
+    name: "Soft Rose",
+    bg: "#fdf8f8", bgAlt: "#f8eff0", bgDark: "#3e2e30",
+    text: "#3a2a2c", sub: "#8a6a6e", accent: "#c07080",
+    accentG: "linear-gradient(135deg,#c07080,#a05565)",
+    card: "#fff", border: "#f0e0e2", tag: "#f8eff0",
+    dkTxt: "#f5e8ea", dkSub: "rgba(245,232,234,.6)",
+  },
+};

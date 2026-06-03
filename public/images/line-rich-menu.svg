@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2500 1686" width="2500" height="1686">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;display=swap');
+      text { font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; }
+    </style>
+    <!-- Cell hover gradient -->
+    <linearGradient id="cellGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e2a3a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#162030;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cellGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#162438;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#101c2e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f4f4a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d3d38;stop-opacity:1" />
+    </linearGradient>
+    <filter id="iconShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="2500" height="1686" fill="#111827"/>
+
+  <!-- Cell 1: 院長紹介 (top-left) -->
+  <rect x="0" y="0" width="1245" height="838" fill="url(#cellGrad1)"/>
+
+  <!-- Cell 2: 受診予約 (top-right) -->
+  <rect x="1255" y="0" width="1245" height="838" fill="url(#cellGrad2)"/>
+
+  <!-- Cell 3: 問診票に回答する (bottom-left) — accent teal to highlight change -->
+  <rect x="0" y="848" width="1245" height="838" fill="url(#accentGrad)"/>
+
+  <!-- Cell 4: お問い合わせ (bottom-right) -->
+  <rect x="1255" y="848" width="1245" height="838" fill="url(#cellGrad1)"/>
+
+  <!-- Grid dividers -->
+  <rect x="1246" y="0" width="8" height="1686" fill="#2d3748" opacity="0.8"/>
+  <rect x="0" y="839" width="2500" height="8" fill="#2d3748" opacity="0.8"/>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- CELL 1: 院長紹介 -->
+  <!-- ═══════════════════════════════════════ -->
+  <!-- Doctor icon (person silhouette) -->
+  <g transform="translate(623, 340)" filter="url(#iconShadow)">
+    <!-- Head -->
+    <circle cx="0" cy="-70" r="72" fill="none" stroke="#60a5fa" stroke-width="8"/>
+    <circle cx="0" cy="-70" r="58" fill="#1e40af" opacity="0.7"/>
+    <!-- Simple person head -->
+    <circle cx="0" cy="-70" r="52" fill="#3b82f6" opacity="0.9"/>
+    <!-- Stethoscope hint -->
+    <ellipse cx="0" cy="-70" rx="30" ry="30" fill="#60a5fa" opacity="0.6"/>
+    <!-- Body / coat -->
+    <path d="M-90,0 Q-90,-20 -60,-30 L-30,-20 Q0,-10 30,-20 L60,-30 Q90,-20 90,0 L90,120 Q90,140 70,140 L-70,140 Q-90,140 -90,120 Z" fill="#2563eb" opacity="0.8"/>
+    <path d="M-30,-20 Q0,10 30,-20 L40,60 L0,80 L-40,60 Z" fill="white" opacity="0.2"/>
+  </g>
+  <!-- Label -->
+  <text x="623" y="640" text-anchor="middle" font-size="72" font-weight="700" fill="white" letter-spacing="4">院長紹介</text>
+  <!-- Subtitle -->
+  <text x="623" y="710" text-anchor="middle" font-size="40" fill="#93c5fd" letter-spacing="2">Doctor Profile</text>
+  <!-- Arrow -->
+  <text x="623" y="780" text-anchor="middle" font-size="36" fill="#60a5fa" opacity="0.7">▶</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- CELL 2: 受診予約 -->
+  <!-- ═══════════════════════════════════════ -->
+  <!-- Calendar icon -->
+  <g transform="translate(1878, 320)" filter="url(#iconShadow)">
+    <!-- Calendar body -->
+    <rect x="-90" y="-60" width="180" height="180" rx="18" fill="none" stroke="#34d399" stroke-width="8"/>
+    <rect x="-90" y="-60" width="180" height="180" rx="18" fill="#065f46" opacity="0.6"/>
+    <!-- Calendar header bar -->
+    <rect x="-90" y="-60" width="180" height="55" rx="18" fill="#10b981" opacity="0.9"/>
+    <rect x="-90" y="-15" width="180" height="15" fill="#10b981" opacity="0.9"/>
+    <!-- Calendar rings -->
+    <rect x="-45" y="-82" width="16" height="44" rx="8" fill="#6ee7b7"/>
+    <rect x="29" y="-82" width="16" height="44" rx="8" fill="#6ee7b7"/>
+    <!-- Calendar dots -->
+    <circle cx="-55" cy="20" r="10" fill="#6ee7b7" opacity="0.9"/>
+    <circle cx="-10" cy="20" r="10" fill="#6ee7b7" opacity="0.9"/>
+    <circle cx="35" cy="20" r="10" fill="white" opacity="0.9"/>
+    <circle cx="-55" cy="65" r="10" fill="#6ee7b7" opacity="0.9"/>
+    <circle cx="-10" cy="65" r="10" fill="#6ee7b7" opacity="0.9"/>
+    <circle cx="35" cy="65" r="10" fill="#6ee7b7" opacity="0.9"/>
+    <!-- Check mark on highlighted date -->
+    <circle cx="35" cy="20" r="16" fill="#10b981"/>
+    <path d="M26,20 L32,27 L44,13" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- Label -->
+  <text x="1878" y="640" text-anchor="middle" font-size="72" font-weight="700" fill="white" letter-spacing="4">受診予約</text>
+  <!-- Subtitle -->
+  <text x="1878" y="710" text-anchor="middle" font-size="40" fill="#6ee7b7" letter-spacing="2">Appointment</text>
+  <!-- Arrow -->
+  <text x="1878" y="780" text-anchor="middle" font-size="36" fill="#34d399" opacity="0.7">▶</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- CELL 3: 問診票に回答する (UPDATED — was メニュー確認) -->
+  <!-- Teal accent to visually distinguish -->
+  <!-- ═══════════════════════════════════════ -->
+  <!-- Clipboard/questionnaire icon -->
+  <g transform="translate(623, 1180)" filter="url(#iconShadow)">
+    <!-- Clipboard body -->
+    <rect x="-80" y="-80" width="160" height="200" rx="14" fill="none" stroke="#5eead4" stroke-width="8"/>
+    <rect x="-80" y="-80" width="160" height="200" rx="14" fill="#134e4a" opacity="0.7"/>
+    <!-- Clipboard clip top -->
+    <rect x="-36" y="-98" width="72" height="36" rx="10" fill="#0d9488"/>
+    <rect x="-20" y="-95" width="40" height="14" rx="7" fill="#134e4a"/>
+    <!-- Lines on form -->
+    <rect x="-52" y="-32" width="104" height="10" rx="5" fill="#5eead4" opacity="0.8"/>
+    <rect x="-52" y="4" width="80" height="10" rx="5" fill="#5eead4" opacity="0.6"/>
+    <rect x="-52" y="40" width="90" height="10" rx="5" fill="#5eead4" opacity="0.6"/>
+    <rect x="-52" y="76" width="70" height="10" rx="5" fill="#5eead4" opacity="0.5"/>
+    <!-- Checkboxes -->
+    <rect x="-52" y="-50" width="20" height="20" rx="4" fill="none" stroke="#5eead4" stroke-width="3"/>
+    <path d="M-48,-42 L-43,-36 L-35,-48" stroke="#5eead4" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- Pen -->
+    <g transform="translate(62, 62) rotate(-40)">
+      <rect x="-6" y="-50" width="12" height="60" rx="4" fill="#f0fdfa"/>
+      <polygon points="-6,10 6,10 0,28" fill="#ccfbf1"/>
+      <rect x="-6" y="-50" width="12" height="14" rx="3" fill="#0d9488"/>
+    </g>
+  </g>
+  <!-- "NEW" badge -->
+  <rect x="20" y="860" width="120" height="46" rx="23" fill="#10b981"/>
+  <text x="80" y="890" text-anchor="middle" font-size="28" font-weight="700" fill="white" letter-spacing="2">NEW</text>
+  <!-- Label — split into two lines for readability -->
+  <text x="623" y="1475" text-anchor="middle" font-size="64" font-weight="700" fill="white" letter-spacing="3">問診票に</text>
+  <text x="623" y="1558" text-anchor="middle" font-size="64" font-weight="700" fill="white" letter-spacing="3">回答する</text>
+  <!-- Subtitle -->
+  <text x="623" y="1618" text-anchor="middle" font-size="38" fill="#5eead4" letter-spacing="2">Questionnaire</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- CELL 4: お問い合わせ -->
+  <!-- ═══════════════════════════════════════ -->
+  <!-- Chat/phone icon -->
+  <g transform="translate(1878, 1180)" filter="url(#iconShadow)">
+    <!-- Speech bubble -->
+    <path d="M-90,-80 Q-90,-100 -70,-100 L70,-100 Q90,-100 90,-80 L90,20 Q90,40 70,40 L20,40 L0,80 L-20,40 L-70,40 Q-90,40 -90,20 Z" fill="none" stroke="#a78bfa" stroke-width="8"/>
+    <path d="M-90,-80 Q-90,-100 -70,-100 L70,-100 Q90,-100 90,-80 L90,20 Q90,40 70,40 L20,40 L0,80 L-20,40 L-70,40 Q-90,40 -90,20 Z" fill="#4c1d95" opacity="0.6"/>
+    <!-- Dots inside bubble -->
+    <circle cx="-35" cy="-30" r="13" fill="#a78bfa" opacity="0.9"/>
+    <circle cx="0" cy="-30" r="13" fill="#a78bfa" opacity="0.9"/>
+    <circle cx="35" cy="-30" r="13" fill="#a78bfa" opacity="0.9"/>
+  </g>
+  <!-- Label -->
+  <text x="1878" y="1475" text-anchor="middle" font-size="64" font-weight="700" fill="white" letter-spacing="3">お問い合わせ</text>
+  <!-- Subtitle -->
+  <text x="1878" y="1558" text-anchor="middle" font-size="38" fill="#c4b5fd" letter-spacing="2">Contact Us</text>
+  <!-- Arrow -->
+  <text x="1878" y="1618" text-anchor="middle" font-size="36" fill="#a78bfa" opacity="0.7">▶</text>
+
+  <!-- Outer border glow -->
+  <rect x="2" y="2" width="2496" height="1682" fill="none" stroke="#2d3748" stroke-width="4" opacity="0.5"/>
+</svg>

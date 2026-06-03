@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ハシカ（麻しん）サマリースライド</title>
+  <style>
+    @page {
+      size: 16in 9in;
+      margin: 0;
+    }
+
+    :root {
+      --ink: #17324d;
+      --muted: #5b6f82;
+      --line: #d9e4ec;
+      --accent: #d94835;
+      --teal: #0e7c78;
+      --blue: #2d70b7;
+      --paper: #f7fbfd;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #e7eef3;
+      font-family: "Yu Gothic", "YuGothic", "Hiragino Kaku Gothic ProN", "Meiryo", Arial, sans-serif;
+      color: var(--ink);
+    }
+
+    .slide {
+      width: min(100vw, 1280px);
+      aspect-ratio: 16 / 9;
+      background: var(--paper);
+      position: relative;
+      overflow: hidden;
+      padding: 34px 54px 20px;
+      box-shadow: 0 22px 70px rgba(23, 50, 77, 0.18);
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(14, 124, 120, 0.10), transparent 33%),
+        linear-gradient(180deg, rgba(217, 72, 53, 0.08), transparent 35%);
+      pointer-events: none;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      grid-template-rows: auto 1fr auto;
+      column-gap: 48px;
+      height: 100%;
+    }
+
+    header {
+      grid-column: 1 / 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 28px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      font-size: 16px;
+      line-height: 1;
+      letter-spacing: 0;
+      font-weight: 700;
+      color: var(--teal);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 46px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .scientific {
+      min-width: 330px;
+      margin-top: 8px;
+      padding: 11px 18px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .scientific span {
+      display: block;
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .scientific strong {
+      display: block;
+      font-size: 23px;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+
+    .scientific small {
+      display: block;
+      margin-top: 7px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      grid-column: 1 / 3;
+      column-gap: 48px;
+      padding-top: 20px;
+    }
+
+    .left,
+    .right {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .key-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .point {
+      border-left: 8px solid var(--teal);
+      background: #fff;
+      border-radius: 8px;
+      padding: 12px 16px 10px;
+      min-height: 98px;
+      box-shadow: 0 10px 24px rgba(23, 50, 77, 0.08);
+    }
+
+    .point.hot {
+      border-left-color: var(--accent);
+    }
+
+    .point.blue {
+      border-left-color: var(--blue);
+    }
+
+    .point h2 {
+      margin: 0 0 9px;
+      font-size: 20px;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    .point p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.35;
+      color: #254660;
+      font-weight: 600;
+    }
+
+    .point small {
+      display: block;
+      margin-top: 6px;
+      font-size: 11px;
+      line-height: 1.35;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .transmission {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .route {
+      background: #eaf7f5;
+      border: 1px solid #c9e5df;
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 800;
+      color: #0c625e;
+    }
+
+    .wide-note {
+      background: #fff;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      padding: 11px 16px;
+    }
+
+    .wide-note h2 {
+      margin: 0 0 8px;
+      font-size: 19px;
+      letter-spacing: 0;
+    }
+
+    .wide-note p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.45;
+      color: #254660;
+      font-weight: 600;
+    }
+
+    figure {
+      margin: 0;
+      background: #fff;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(23, 50, 77, 0.08);
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: 218px;
+      object-fit: cover;
+      object-position: center 58%;
+      background: #d9e4ec;
+    }
+
+    figcaption {
+      padding: 9px 14px 10px;
+      font-size: 11px;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    .origin {
+      display: grid;
+      grid-template-columns: 0.72fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .origin .term {
+      display: grid;
+      place-items: center;
+      min-height: 98px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--ink);
+      text-align: center;
+      padding: 16px;
+    }
+
+    .origin .term strong {
+      display: block;
+      font-size: 34px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .origin .term span {
+      display: block;
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .origin p {
+      margin: 0;
+      background: #fff;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      padding: 13px 15px;
+      font-size: 13px;
+      line-height: 1.48;
+      color: #254660;
+      font-weight: 600;
+    }
+
+    .sources {
+      grid-column: 1 / 3;
+      align-self: end;
+      padding-top: 10px;
+      font-size: 10px;
+      line-height: 1.35;
+      color: #607487;
+      border-top: 1px solid var(--line);
+    }
+
+    .sources strong {
+      color: #42586d;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .slide {
+        width: 16in;
+        height: 9in;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="slide" aria-label="ハシカ（麻しん）サマリースライド">
+      <div class="content">
+        <header>
+          <div>
+            <p class="eyebrow">感染症ミニサマリー</p>
+            <h1>ハシカ（麻しん）</h1>
+          </div>
+          <div class="scientific">
+            <span>原因ウイルス</span>
+            <strong>Measles virus</strong>
+            <small>現行分類名の例: Measles morbillivirus / Morbillivirus hominis</small>
+          </div>
+        </header>
+
+        <main>
+          <section class="left" aria-label="重要ポイント">
+            <div class="key-grid">
+              <article class="point hot">
+                <h2>抗生物質は効かない</h2>
+                <p>ウイルス感染症のため、麻疹ウイルス自体に抗生物質は無効。</p>
+                <small>細菌性肺炎・中耳炎など合併症では使う場合があります。</small>
+              </article>
+
+              <article class="point">
+                <h2>主な感染経路</h2>
+                <p>空気感染が重要。飛沫・接触でも広がります。</p>
+                <small>空気中や表面で最大2時間感染性を保つことがあります。</small>
+              </article>
+
+              <article class="point blue">
+                <h2>感染力は非常に強い</h2>
+                <p>R0はおおむね12-18。インフルエンザの約10倍が目安。</p>
+                <small>免疫がない濃厚接触者では最大9割が感染するとされます。</small>
+              </article>
+
+              <article class="point">
+                <h2>予防の要点</h2>
+                <p>最も有効な予防はMMR/MRワクチンの2回接種。</p>
+                <small>発疹前から周囲へうつす可能性があります。</small>
+              </article>
+            </div>
+
+            <div class="transmission" aria-label="感染経路">
+              <div class="route">空気感染</div>
+              <div class="route">飛沫感染</div>
+              <div class="route">接触感染</div>
+            </div>
+
+            <section class="wide-note">
+              <h2>見逃しやすい初期症状</h2>
+              <p>発熱、咳、鼻水、結膜炎から始まり、2-3日後に口腔内のコプリック斑、その後に全身の発しんが目立ちます。</p>
+            </section>
+          </section>
+
+          <section class="right" aria-label="由来と写真">
+            <figure>
+              <img src="cdc-measles-koplik-spots.jpg" alt="麻しん感染で見られるコプリック斑のCDC写真">
+              <figcaption>
+                写真引用: CDC Public Health Image Library, ID #24415. Koplik spots due to measles infection.
+                Content provider: CDC / Heinz F. Eichenwald, MD. Public domain.
+              </figcaption>
+            </figure>
+
+            <div class="origin">
+              <div class="term">
+                <div>
+                  <strong>芒</strong>
+                  <span>はしか・のぎ</span>
+                </div>
+              </div>
+              <p>
+                「はしか」は、稲や麦の穂先の硬い毛「芒（はしか）」に触れたような痛がゆさ・発しんに由来するという説があります。
+                医学用語では「麻しん／麻疹（ましん）」。
+              </p>
+            </div>
+          </section>
+        </main>
+
+        <footer class="sources">
+          <strong>Sources:</strong>
+          厚生労働省「麻しん（はしか）」 / WHO “Measles” fact sheet / CDC “How Measles Spreads,” “Clinical Overview of Measles,” “Photos of Measles” /
+          日本感染症学会「麻しん（はしか）に注意」 / NCBI Taxonomy “Measles morbillivirus” / 語源由来辞典「麻疹／はしか」
+        </footer>
+      </div>
+  </section>
+</body>
+</html>
