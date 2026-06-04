@@ -775,7 +775,7 @@
                 <p class="text-slate-500 font-bold mb-4">ありがとうございました</p>
                 <p class="text-sm text-slate-400 leading-relaxed mb-8">問診票の内容は当院の電子カルテへ安全に送信されました。お呼び出しまでそのままお待ちください。</p>
                 <p id="redirect-countdown" class="text-xs text-slate-400 mb-3"></p>
-                <a href="/booking.html" class="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white font-bold rounded-2xl shadow-lg hover:bg-teal-700 transition-colors text-sm">
+                <a href="booking.html" class="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white font-bold rounded-2xl shadow-lg hover:bg-teal-700 transition-colors text-sm">
                     <i data-lucide="calendar" class="w-4 h-4"></i> オンライン診療の予約をする
                 </a>
             </div>
@@ -1179,7 +1179,7 @@
             el.textContent = `${secs} 秒後に自動で予約ページへ移動します`;
             const timer = setInterval(() => {
                 secs--;
-                if (secs <= 0) { clearInterval(timer); window.location.href = '/umemura-clinic-hp/booking.html'; }
+                if (secs <= 0) { clearInterval(timer); window.location.href = 'booking.html'; }
                 else { el.textContent = `${secs} 秒後に自動で予約ページへ移動します`; }
             }, 1000);
         }
