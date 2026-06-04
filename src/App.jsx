@@ -386,7 +386,7 @@ function Nav({ T, logo, activeSection, onOnlineClick, onPhoneClick }) {
         </a>
         <div className="nav-links" style={{ display: "flex", gap: 14, alignItems: "center", flexShrink: 0 }}>
           {links.map(l => (
-            <a className="nav-menu-link" key={l.href} href={l.href} style={{
+            <a className="nav-menu-link" key={l.href + l.label} href={l.href} style={{
               fontFamily: T.sans, fontSize: 13, color: scrolled ? T.text : "rgba(255,255,255,.92)",
               textDecoration: "none", letterSpacing: .5,
               textShadow: scrolled ? "none" : "0 1px 4px rgba(0,0,0,.3)",
