@@ -331,21 +331,17 @@
 // ── 設定 ──────────────────────────────────────────────────
 const CLINIC_TEL = '080-2127-3696';
 const LINE_NOTIFY_WEBHOOK = '';  // TODO: webhook URLを設定
-// Gemini API キー（Google AI Studio で取得: https://aistudio.google.com/apikey）
-const GEMINI_API_KEY = '';  // TODO: 環境変数またはバックエンド経由で設定
-// APIキー作成日（90日で期限切れ）: 2026-05-27
+const GEMINI_PROXY_URL = 'https://katanolab.dev/api/gemini-ocr';
 
-// ── OCR: Gemini API 呼び出し ─────────────────────────────
+// ── OCR: プロキシ経由でGemini API呼び出し ─────────────────
 async function callGeminiOCR(base64, prompt, mimeType = 'image/jpeg') {
-  if (!GEMINI_API_KEY) throw new Error('no_key');
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
   const payload = {
     contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType, data: base64 } }] }],
     generationConfig: { responseMimeType: 'application/json' }
   };
   for (let i = 0; i < 3; i++) {
     try {
-      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const res = await fetch(GEMINI_PROXY_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       if (!res.ok) { const t = await res.text(); console.error('Gemini error', res.status, t); throw new Error(res.status); }
       return await res.json();
     } catch(e) {
@@ -391,16 +387,11 @@ async function handleInsuranceOCR(input) {
     const base64 = e.target.result.split(',')[1];
     const prompt = `健康保険証の画像から以下をJSONで抽出してください。\n{"氏名":"苗字 名前（漢字）","氏名カナ":"ミョウジ メイ（カタカナ、不明なら空文字）","生年月日":"YYYY-MM-DD","性別":"male または female"}`;
     try {
-      if (!GEMINI_API_KEY) throw new Error('no_key');
       const res = await callGeminiOCR(base64, prompt, mimeType);
       const d = JSON.parse(res.candidates[0].content.parts[0].text);
       fillFromOCR(d, '保険証');
     } catch(err) {
-      if (err.message === 'no_key') {
-        alert('Gemini APIキーが設定されていません。');
-      } else {
-        alert('読み取りに失敗しました。お手数ですが手入力をお願いします。');
-      }
+      alert('読み取りに失敗しました。お手数ですが手入力をお願いします。');
     } finally { hideOcrOverlay(); input.value = ''; }
   };
   reader.readAsDataURL(file);
@@ -408,7 +399,6 @@ async function handleInsuranceOCR(input) {
 
 async function handleMyNumberOCR(input) {
   if (!input.files || input.files.length === 0) return;
-  if (!GEMINI_API_KEY) { alert('Gemini APIキーが設定されていません。'); return; }
   if (input.files.length < 3) {
     alert('スクリーンショット3枚をまとめて選択してください。');
     return;
@@ -426,7 +416,6 @@ async function handleMyNumberOCR(input) {
     const base64arr = await Promise.all(files.map(toBase64));
     const prompt = `マイナポータルの健康保険証情報スクリーンショット（3枚）から以下をJSONで抽出してください。\n{"氏名":"苗字 名前（漢字）","氏名カナ":"ミョウジ メイ（カタカナ、不明なら空文字）","生年月日":"YYYY-MM-DD（和暦→西暦変換）","性別":"male または female"}`;
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
     const imageParts = base64arr.map(b => ({ inlineData: { mimeType: b.mimeType, data: b.data } }));
     const payload = {
       contents: [{ parts: [{ text: prompt }, ...imageParts] }],
