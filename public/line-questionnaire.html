@@ -1179,7 +1179,7 @@
             el.textContent = `${secs} 秒後に自動で予約ページへ移動します`;
             const timer = setInterval(() => {
                 secs--;
-                if (secs <= 0) { clearInterval(timer); window.location.href = '/booking.html'; }
+                if (secs <= 0) { clearInterval(timer); window.location.href = '/umemura-clinic-hp/booking.html'; }
                 else { el.textContent = `${secs} 秒後に自動で予約ページへ移動します`; }
             }, 1000);
         }

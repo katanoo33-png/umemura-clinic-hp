@@ -1635,7 +1635,7 @@ function LineQuestionnairePopup({ T }) {
 // ══════════════════════════════════════════════════════════
 // PHONE CONFIRM MODAL
 // ══════════════════════════════════════════════════════════
-function PhoneConfirmModal({ T, open, onClose, note }) {
+function PhoneConfirmModal({ T, open, onClose, onBack, note }) {
   if (!open) return null;
   return (
     <div onClick={onClose} style={{
@@ -1681,11 +1681,11 @@ function PhoneConfirmModal({ T, open, onClose, note }) {
           }} onClick={onClose}>
             <PhoneIcon size={17} />発信する
           </a>
-          <button onClick={onClose} style={{
+          <button onClick={onBack || onClose} style={{
             width: "100%", background: "none", border: `1px solid ${T.border}`,
             borderRadius: 8, padding: "11px", fontFamily: T.sans, fontSize: 14,
             color: T.textSub, cursor: "pointer",
-          }}>キャンセル</button>
+          }}>{onBack ? "← 戻る" : "キャンセル"}</button>
         </div>
       </div>
     </div>
@@ -1994,6 +1994,7 @@ export default function App() {
   const [onlineChoiceOpen, setOnlineChoiceOpen] = useState(false);
   const [phoneConfirmOpen, setPhoneConfirmOpen] = useState(false);
   const [phoneConfirmNote, setPhoneConfirmNote] = useState("");
+  const [phoneFromOnline, setPhoneFromOnline] = useState(false);
 
   const openBookingGuidance = useCallback((e) => {
     e.preventDefault();
@@ -2075,8 +2076,9 @@ export default function App() {
       <LineQuestionnairePopup T={T} />
       <BookingGuidanceModal T={T} open={bookingModalOpen} onClose={() => setBookingModalOpen(false)} onPhoneClick={(e) => { setBookingModalOpen(false); openPhoneConfirm(e); }} />
       <OnlineChoiceModal T={T} open={onlineChoiceOpen} onClose={() => setOnlineChoiceOpen(false)}
-        onPhoneForOnline={() => { setOnlineChoiceOpen(false); setPhoneConfirmNote("オンライン診療をご希望の場合は、まずお電話にてご予約をお取りください。"); setPhoneConfirmOpen(true); }} />
-      <PhoneConfirmModal T={T} open={phoneConfirmOpen} onClose={() => setPhoneConfirmOpen(false)} note={phoneConfirmNote} />
+        onPhoneForOnline={() => { setOnlineChoiceOpen(false); setPhoneConfirmNote("オンライン診療をご希望の場合は、まずお電話にてご予約をお取りください。"); setPhoneConfirmOpen(true); setPhoneFromOnline(true); }} />
+      <PhoneConfirmModal T={T} open={phoneConfirmOpen} onClose={() => { setPhoneConfirmOpen(false); setPhoneFromOnline(false); }} note={phoneConfirmNote}
+        onBack={phoneFromOnline ? () => { setPhoneConfirmOpen(false); setPhoneFromOnline(false); setOnlineChoiceOpen(true); } : null} />
 
     </>
   );
