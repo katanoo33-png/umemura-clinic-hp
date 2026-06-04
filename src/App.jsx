@@ -1577,7 +1577,7 @@ function LineQuestionnairePopup({ T }) {
               友だち追加後、LINEのトーク画面に問診票URLが届きます。先にご回答いただくと、受付から診療までの流れがスムーズです。
             </p>
             <div style={{ display: "grid", gap: 10 }}>
-              <button onClick={() => window.open('/line-add.html', '_blank')} style={{
+              <button onClick={() => window.open(import.meta.env.BASE_URL + 'line-add.html', '_blank')} style={{
                 display: "block",
                 textAlign: "center",
                 background: lineGrad,

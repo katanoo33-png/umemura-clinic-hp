@@ -71,7 +71,7 @@ export const CLINIC = {
 // 実際のLINE公式アカウントURL・問診票URLが決まったらここだけ差し替えます。
 export const LINE = {
   friendUrl:        "https://line.me/R/ti/p/@434xzywa",
-  questionnaireUrl: "/line-questionnaire.html",
+  questionnaireUrl: `${base}line-questionnaire.html`,
 };
 
 // ── BOOKING ───────────────────────────────────────────────────────
