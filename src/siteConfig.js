@@ -75,7 +75,7 @@ export const LINE = {
 };
 
 // ── BOOKING ───────────────────────────────────────────────────────
-export const BOOKING_URL = "https://verdant-madeleine-c5b4cd.netlify.app/booking.html";
+export const BOOKING_URL = `${base}booking.html`;
 
 // ── DOCTORS ───────────────────────────────────────────────────────
 export const DOCTORS = [
