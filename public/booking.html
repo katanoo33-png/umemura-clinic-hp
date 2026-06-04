@@ -169,7 +169,7 @@
           onmouseover="this.style.borderColor='#0d9488'; this.style.boxShadow='0 4px 12px rgba(13,148,136,.15)'"
           onmouseout="this.style.borderColor='#99f6e4'; this.style.boxShadow='none'">
           <div style="width:44px; height:44px; background:#f0fdfa; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:22px;">💳</div>
-          <span style="font-size:12px; font-weight:700; color:#134e4a; text-align:center; line-height:1.4;">マイナ保険証<br><span style="font-size:10px; font-weight:400; color:#64748b;">スクショ3枚を選択</span></span>
+          <span style="font-size:12px; font-weight:700; color:#134e4a; text-align:center; line-height:1.4;">マイナ保険証<br><span style="font-size:10px; font-weight:400; color:#64748b;">画像を選択（複数可）</span></span>
         </button>
       </div>
       <input type="file" id="insurance-img" accept="image/*" style="display:none;" onchange="handleInsuranceOCR(this)" />
@@ -302,7 +302,7 @@
         <div style="width:46px; height:46px; background:#f0fdfa; border-radius:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:22px;">💳</div>
         <div>
           <p style="font-size:13px; font-weight:700; color:#0f766e; margin:0 0 2px;">マイナ保険証でかんたん入力</p>
-          <p style="font-size:11px; color:#0d9488; margin:0;">マイナ保険証のスクリーンショット3枚で登録</p>
+          <p style="font-size:11px; color:#0d9488; margin:0;">マイナ保険証の画像を1枚以上選択（追加アップロード可）</p>
         </div>
       </a>
 
@@ -330,8 +330,12 @@
 <script>
 // ── 設定 ──────────────────────────────────────────────────
 const CLINIC_TEL = '080-2127-3696';
-const LINE_NOTIFY_WEBHOOK = '';  // TODO: webhook URLを設定
+const LINE_NOTIFY_WEBHOOK = '';
 const GEMINI_PROXY_URL = 'https://katanolab.dev/api/gemini-ocr';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzwlBRAHPiIQeUTuIWgw5ZbBbr5WcGNPNHtnFeemgmIKZES3K1BI1NHtLdqrYuEzOX-3w/exec';
+
+// アップロードされた画像を累積保存（Drive送信用）
+let uploadedImages = [];
 
 // ── OCR: プロキシ経由でGemini API呼び出し ─────────────────
 async function callGeminiOCR(base64, prompt, mimeType = 'image/jpeg') {
@@ -385,6 +389,8 @@ async function handleInsuranceOCR(input) {
   const reader = new FileReader();
   reader.onload = async (e) => {
     const base64 = e.target.result.split(',')[1];
+    // Drive送信用に累積保存
+    uploadedImages.push({ data: base64, mimeType });
     const prompt = `健康保険証の画像から以下をJSONで抽出してください。\n{"氏名":"苗字 名前（漢字）","氏名カナ":"ミョウジ メイ（カタカナ、不明なら空文字）","生年月日":"YYYY-MM-DD","性別":"male または female"}`;
     try {
       const res = await callGeminiOCR(base64, prompt, mimeType);
@@ -399,11 +405,8 @@ async function handleInsuranceOCR(input) {
 
 async function handleMyNumberOCR(input) {
   if (!input.files || input.files.length === 0) return;
-  if (input.files.length < 3) {
-    alert('スクリーンショット3枚をまとめて選択してください。');
-    return;
-  }
-  showOcrOverlay('マイナ保険証を読み取り中（3枚）...');
+  const count = input.files.length;
+  showOcrOverlay(`マイナ保険証を読み取り中（${count}枚）...`);
 
   const toBase64 = (file) => new Promise((resolve) => {
     const r = new FileReader();
@@ -412,20 +415,23 @@ async function handleMyNumberOCR(input) {
   });
 
   try {
-    const files = Array.from(input.files).slice(0, 3);
+    const files = Array.from(input.files);
     const base64arr = await Promise.all(files.map(toBase64));
-    const prompt = `マイナポータルの健康保険証情報スクリーンショット（3枚）から以下をJSONで抽出してください。\n{"氏名":"苗字 名前（漢字）","氏名カナ":"ミョウジ メイ（カタカナ、不明なら空文字）","生年月日":"YYYY-MM-DD（和暦→西暦変換）","性別":"male または female"}`;
 
+    // Drive送信用に累積保存
+    uploadedImages.push(...base64arr);
+
+    const prompt = `マイナポータルの健康保険証情報の画像から以下をJSONで抽出してください。情報が複数の画像に分かれている場合はすべて統合してください。\n{"氏名":"苗字 名前（漢字）","氏名カナ":"ミョウジ メイ（カタカナ、不明なら空文字）","生年月日":"YYYY-MM-DD（和暦→西暦変換）","性別":"male または female"}`;
     const imageParts = base64arr.map(b => ({ inlineData: { mimeType: b.mimeType, data: b.data } }));
     const payload = {
       contents: [{ parts: [{ text: prompt }, ...imageParts] }],
       generationConfig: { responseMimeType: 'application/json' }
     };
-    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const res = await fetch(GEMINI_PROXY_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     if (!res.ok) { const t = await res.text(); console.error('Gemini error', res.status, t); throw new Error(res.status); }
     const json = await res.json();
     const d = JSON.parse(json.candidates[0].content.parts[0].text);
-    fillFromOCR(d, 'マイナ保険証');
+    fillFromOCR(d, `マイナ保険証（${count}枚）`);
   } catch(err) {
     console.error('マイナ保険証OCRエラー:', err);
     alert('読み取りに失敗しました。お手数ですが手入力をお願いします。');
@@ -586,6 +592,30 @@ async function submitBooking() {
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spin" style="display:inline-block; width:18px; height:18px; border:2.5px solid rgba(255,255,255,.4); border-top-color:#fff; border-radius:50; margin-right:8px; vertical-align:middle;"></span>送信中...';
+
+  // GASへ予約データ＋画像を送信
+  try {
+    const fromQuestionnaire = localStorage.getItem('umemura_from_questionnaire') === '1';
+    await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        service:           booking.service,
+        date:              booking.date,
+        time:              booking.time,
+        name:              booking.name,
+        kana:              booking.kana,
+        dob:               booking.dob,
+        gender:            booking.gender,
+        tel:               booking.tel,
+        email:             booking.email,
+        symptoms:          booking.symptoms,
+        visitType:         booking.visitType,
+        fromQuestionnaire: fromQuestionnaire,
+        images:            uploadedImages,
+      }),
+    });
+  } catch(e) { console.warn('GAS送信エラー:', e); }
 
   // LINE Bot 通知（Webhook が設定されている場合）
   if (LINE_NOTIFY_WEBHOOK) {
