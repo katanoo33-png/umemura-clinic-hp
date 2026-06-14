@@ -338,7 +338,7 @@ function Nav({ T, logo, activeSection, onOnlineClick, onPhoneClick }) {
     }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center",
         justifyContent: "space-between", height: 68, gap: 12 }}>
-        <a href="#" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0, minWidth: 0 }}>
+        <a href="#top" aria-label="ページ最上部へ戻る" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0, minWidth: 0 }}>
           <div style={{
             width: 86,
             height: 58,
@@ -531,7 +531,7 @@ function HeroFullImage({ T, images, updateImage, onOnlineClick, onPhoneClick }) 
       <div style={{ position: "absolute", bottom: 80, left: "50%", transform: "translateX(-50%)",
         zIndex: 3, display: "flex", gap: 8 }}>
         {HERO_KEYS.map((_, i) => (
-          <button key={i} onClick={() => { setFade(false); setTimeout(() => { setCurrent(i); setFade(true); }, 300); }}
+          <button key={i} aria-label={`スライド${i + 1}を表示`} onClick={() => { setFade(false); setTimeout(() => { setCurrent(i); setFade(true); }, 300); }}
             style={{
               width: i === current ? 24 : 8, height: 8, borderRadius: 4,
               background: i === current ? "#fff" : "rgba(255,255,255,.4)",
@@ -1473,7 +1473,7 @@ function Footer({ T, logo }) {
             </p>
           </div>
           <div>
-            <h4 style={{ fontFamily: T.sans, fontSize: 11, color: T.accent, marginBottom: 14, letterSpacing: 2 }}>MENU</h4>
+            <h3 style={{ fontFamily: T.sans, fontSize: 11, color: T.accent, marginBottom: 14, letterSpacing: 2 }}>MENU</h3>
             {menuLinks.map((l) => (
               <a key={l.label} href={l.href} style={footerLinkStyle}
                 onMouseEnter={e => e.currentTarget.style.color = "#fff"}
@@ -1482,7 +1482,7 @@ function Footer({ T, logo }) {
             ))}
           </div>
           <div>
-            <h4 style={{ fontFamily: T.sans, fontSize: 11, color: T.accent, marginBottom: 14, letterSpacing: 2 }}>INFO</h4>
+            <h3 style={{ fontFamily: T.sans, fontSize: 11, color: T.accent, marginBottom: 14, letterSpacing: 2 }}>INFO</h3>
             {infoLinks.map((l) => (
               <a key={l.label} href={l.href} style={footerLinkStyle}
                 onMouseEnter={e => e.currentTarget.style.color = "#fff"}
