@@ -77,6 +77,11 @@ export const LINE = {
 // ── BOOKING ───────────────────────────────────────────────────────
 export const BOOKING_URL = `${base}booking.html`;
 
+// ── CONTACT FORM ──────────────────────────────────────────────────
+// 04_LINE-GAS連携/contact-intake/Code.gs をデプロイして発行されたURLをここに設定します。
+// 未設定の場合は送信内容をコンソールに出力するのみで、実際の通知は行われません。
+export const CONTACT_ENDPOINT = "https://script.google.com/macros/s/AKfycbwUCypVfBoofLx_v9bCDXdpDmSBLaeCkd395LNgo0apiEAYjEjkV-Z9nkgfyGkUd1iw/exec";
+
 // ── DOCTORS ───────────────────────────────────────────────────────
 export const DOCTORS = [
   {
@@ -84,7 +89,7 @@ export const DOCTORS = [
     nameEn:     "Ryusuke Umemura",
     title:      "院長",
     specialty:  "内科・消化器内科・皮膚科",
-    bio:        "総合内科専門医、消化器病専門医、内視鏡専門医、労働衛生コンサルタント。外来診療から訪問診療まで、専門性を活かした質の高い医療で皆様の健康をサポートいたします。",
+    bio:        "総合内科専門医、消化器病専門医、内視鏡専門医。外来診療から訪問診療まで、専門性を活かした質の高い医療で皆様の健康をサポートいたします。",
     imageKey:   "doctor1",
   },
   {

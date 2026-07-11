@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お薬の継続希望 | うめむら半蔵門内科歯科</title>
+<meta name="robots" content="noindex, nofollow" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+  html, body { overflow-x: hidden; max-width: 100%; }
+  body { font-family: 'Noto Sans JP', sans-serif; background-color: #f0fdfa; -webkit-tap-highlight-color: transparent; }
+  .glass-card { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); }
+  .field-error { background-color:#fef2f2 !important; border-color:#f87171 !important; }
+  .loader { border:3px solid #f3f3f3; border-top:3px solid #0d9488; border-radius:50%; width:20px; height:20px; animation:spin 1s linear infinite; display:inline-block; vertical-align:middle; margin-right:8px; }
+  @keyframes spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+  .fade { animation: fadeIn 0.4s ease-out; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body class="min-h-screen pb-28">
+
+<!-- バリデーションアラート -->
+<div id="validation-alert" class="hidden fixed top-5 left-1/2 -translate-x-1/2 z-[1000] w-[90%] max-w-md bg-red-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3">
+  <i data-lucide="alert-circle"></i>
+  <div class="text-sm font-bold"><p id="alert-text">必須項目を入力してください</p></div>
+</div>
+
+<!-- ヘッダー -->
+<div class="sticky top-0 z-40 bg-white/80 backdrop-blur-md px-6 py-4 shadow-sm">
+  <div class="max-w-md mx-auto flex items-center gap-3">
+    <div class="p-2.5 bg-teal-100 rounded-2xl text-teal-600"><i data-lucide="pill"></i></div>
+    <div>
+      <h1 class="text-base font-bold text-slate-800">お薬の継続のご希望</h1>
+      <p class="text-[10px] text-slate-400 font-bold tracking-wide">うめむら半蔵門内科歯科</p>
+    </div>
+  </div>
+</div>
+
+<div class="max-w-md mx-auto px-4 mt-6">
+
+  <!-- 入力フォーム -->
+  <div id="form-view" class="fade">
+    <!-- 案内 -->
+    <div class="glass-card rounded-3xl p-5 shadow-xl border-t-4 border-teal-500 mb-4">
+      <p class="text-sm text-slate-600 leading-relaxed">
+        いつものお薬が<span class="font-bold text-teal-600">そろそろ無くなりそうな方</span>のための受付フォームです。<br>
+        以下をご入力ください。スタッフが確認し、お薬の準備や受診のご案内をいたします。
+      </p>
+      <div class="mt-3 bg-amber-50 border border-amber-200 rounded-2xl p-3 flex gap-2 items-start">
+        <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+        <p class="text-[11px] text-amber-700 leading-relaxed">お薬の内容や期間により、<span class="font-bold">診察が必要な場合</span>がございます。あらかじめご了承ください。</p>
+      </div>
+    </div>
+
+    <!-- 入力項目 -->
+    <div class="glass-card rounded-3xl p-6 shadow-xl space-y-5">
+      <!-- 氏名 -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-2">お名前 <span class="text-red-400">*</span></label>
+        <div class="grid grid-cols-2 gap-3">
+          <input type="text" id="in_family" placeholder="姓（山田）" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
+          <input type="text" id="in_given" placeholder="名（太郎）" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
+        </div>
+      </div>
+      <!-- 生年月日 -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">生年月日 <span class="text-red-400">*</span> <span class="text-[10px] text-slate-400 font-normal">本人確認のため</span></label>
+        <input type="date" id="in_birthday" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
+      </div>
+      <!-- 電話番号 -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">電話番号 <span class="text-red-400">*</span> <span class="text-[10px] text-slate-400 font-normal">ご連絡用</span></label>
+        <input type="tel" id="in_tel" placeholder="090-1234-5678" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
+      </div>
+      <!-- お薬 -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">継続を希望されるお薬 <span class="text-red-400">*</span></label>
+        <p class="text-[10px] text-slate-400 mb-2">お薬手帳の名前や、普段もらっているお薬名をご記入ください。分かる範囲で構いません。</p>
+        <textarea id="in_meds" rows="3" placeholder="例：アムロジピン、メトホルミン　など" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm resize-none" oninput="this.classList.remove('field-error')"></textarea>
+      </div>
+      <!-- 希望来院日 -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">希望される来院日 <span class="text-slate-400 font-normal">(任意)</span></label>
+        <input type="date" id="in_visit" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm">
+      </div>
+      <!-- 備考 -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">ご連絡事項 <span class="text-slate-400 font-normal">(任意)</span></label>
+        <textarea id="in_note" rows="2" placeholder="症状の変化やご希望があればご記入ください" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm resize-none"></textarea>
+      </div>
+    </div>
+
+    <!-- 注意・緊急時 -->
+    <div class="mt-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
+      <p class="text-[11px] font-bold text-slate-600">📩 ご返信について</p>
+      <p class="text-[10px] text-slate-500 leading-relaxed">営業時間内に順次確認いたします。営業時間外の場合は翌診療日以降のご連絡となります。</p>
+      <div class="bg-red-50 border border-red-100 rounded-xl p-3 mt-1">
+        <p class="text-[10px] text-red-600 font-bold leading-relaxed">🚨 体調が急変した場合や緊急の際は、このフォームではなく受付（080-2127-3696）へお電話、または救急（#7119）をご利用ください。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 前回送信との確認（再来の方のみ表示） -->
+  <div id="confirm-view" class="hidden fade">
+    <div class="glass-card rounded-3xl p-8 shadow-xl text-center flex flex-col items-center justify-center min-h-[50vh]">
+      <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-6"><i data-lucide="user-check" class="w-10 h-10"></i></div>
+      <h2 class="text-xl font-bold text-slate-800 mb-3">前回と同じ<br><span id="confirm-name" class="text-teal-600"></span> 様でお間違いないですか？</h2>
+      <p class="text-xs text-slate-400 leading-relaxed mb-8">お名前・生年月日・電話番号が、以前ご送信いただいた内容と一致しました。</p>
+      <div class="w-full space-y-3">
+        <button onclick="proceedSubmit()" class="w-full py-3.5 rounded-2xl font-bold text-sm text-white bg-teal-600 shadow-lg shadow-teal-200 active:scale-95 transition-all">
+          はい、間違いありません
+        </button>
+        <button onclick="backToForm()" class="w-full py-3.5 rounded-2xl font-bold text-sm text-slate-600 bg-slate-100 active:scale-95 transition-all">
+          いいえ、内容を訂正する
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 送信完了 -->
+  <div id="done-view" class="hidden fade">
+    <div class="glass-card rounded-3xl p-10 shadow-xl text-center flex flex-col items-center justify-center min-h-[60vh]">
+      <div class="w-24 h-24 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mb-8 animate-bounce"><i data-lucide="check-circle" class="w-12 h-12"></i></div>
+      <h2 class="text-2xl font-bold text-slate-800 mb-2">受け付けました</h2>
+      <p class="text-slate-500 font-bold mb-4">ありがとうございました</p>
+      <p class="text-sm text-slate-400 leading-relaxed mb-8">スタッフが内容を確認し、お薬の準備や受診のご案内をLINEまたはお電話でご連絡いたします。</p>
+
+      <div class="w-full grid grid-cols-3 gap-2 mb-3">
+        <button onclick="window.close()" class="flex flex-col items-center gap-1 px-2 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-colors text-[11px]">
+          <i data-lucide="x" class="w-4 h-4"></i> 画面を閉じる
+        </button>
+        <a href="line://nv/chat" class="flex flex-col items-center gap-1 px-2 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-colors text-[11px]">
+          <i data-lucide="message-circle" class="w-4 h-4"></i> LINEに戻る
+        </a>
+        <a href="https://katanolab.dev/clinic/" class="flex flex-col items-center gap-1 px-2 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-colors text-[11px]">
+          <i data-lucide="home" class="w-4 h-4"></i> ホームページ
+        </a>
+      </div>
+
+      <a href="https://liff.line.me/2010663357-fZf1eaFF" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-teal-600 text-white font-bold rounded-2xl shadow-lg shadow-teal-200 hover:bg-teal-700 transition-colors text-sm">
+        <i data-lucide="calendar" class="w-4 h-4"></i> 予約を続ける
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- 送信ボタン -->
+<div id="footer-nav" class="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-md border-t border-slate-100 z-40">
+  <div class="max-w-md mx-auto">
+    <button id="btn-submit" onclick="submitRefill()" class="w-full py-4 rounded-2xl font-bold text-sm text-white bg-teal-600 shadow-lg shadow-teal-200 active:scale-95 transition-all flex items-center justify-center gap-2">
+      <i data-lucide="send" class="w-4 h-4"></i> この内容で送信する
+    </button>
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  // ── 保存先 GAS Web App URL ──────────────────────────────
+  // refill-intake/Code.gs をデプロイして発行されたURLをここに設定してください。
+  // 未設定でも画面は動作します（送信内容はコンソールに出力）。
+  const REFILL_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzSmu_RHCZtVT7XZ8WmFiF_YrliPQFWbEUvbm9RPRpYwxxQG2oU_e-6zGlvxIh9_eZM/exec';
+
+  function showAlert(msg) {
+    const a = document.getElementById('validation-alert');
+    if (msg) document.getElementById('alert-text').textContent = msg;
+    a.classList.remove('hidden');
+    setTimeout(() => a.classList.add('hidden'), 2600);
+  }
+
+  let pendingData = null; // 照合確認中に保持しておく送信内容
+
+  async function submitRefill() {
+    const family = document.getElementById('in_family');
+    const given  = document.getElementById('in_given');
+    const birth  = document.getElementById('in_birthday');
+    const tel    = document.getElementById('in_tel');
+    const meds   = document.getElementById('in_meds');
+
+    // 必須チェック
+    let bad = [];
+    [family, given, birth, tel, meds].forEach(el => { if (!el.value.trim()) { el.classList.add('field-error'); bad.push(el); } });
+    if (bad.length) { showAlert('必須項目（*）をご入力ください'); bad[0].scrollIntoView({behavior:'smooth',block:'center'}); return; }
+
+    pendingData = {
+      種別: '処方継続希望',
+      氏名: family.value.trim() + ' ' + given.value.trim(),
+      生年月日: birth.value,
+      電話番号: tel.value.trim(),
+      希望のお薬: meds.value.trim(),
+      希望来院日: document.getElementById('in_visit').value || '',
+      連絡事項: document.getElementById('in_note').value.trim(),
+      受付日時: new Date().toLocaleString('ja-JP')
+    };
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loader"></span> 確認中...';
+
+    // 過去の送信履歴と突き合わせ（患者マスタとの本人確認ではない。再来の方向けの軽い確認）
+    let matched = false;
+    if (REFILL_ENDPOINT) {
+      try {
+        const res = await fetch(REFILL_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // application/jsonだとCORSプリフライトでGASが弾くため
+          body: JSON.stringify({
+            action: 'lookup',
+            氏名: pendingData['氏名'],
+            生年月日: pendingData['生年月日'],
+            電話番号: pendingData['電話番号']
+          })
+        });
+        const json = await res.json();
+        matched = !!json.matched;
+        if (matched && json.name) {
+          document.getElementById('confirm-name').textContent = json.name;
+        }
+      } catch (e) {
+        console.warn('照合エラー（未送信のまま続行します）:', e);
+      }
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i> この内容で送信する';
+    lucide.createIcons();
+
+    if (matched) {
+      // 再来と判定 → 確認画面を挟む
+      document.getElementById('form-view').classList.add('hidden');
+      document.getElementById('footer-nav').classList.add('hidden');
+      document.getElementById('confirm-view').classList.remove('hidden');
+      window.scrollTo(0, 0);
+    } else {
+      // 初回、または照合エラー時はそのまま送信
+      await proceedSubmit();
+    }
+  }
+
+  function backToForm() {
+    document.getElementById('confirm-view').classList.add('hidden');
+    document.getElementById('form-view').classList.remove('hidden');
+    document.getElementById('footer-nav').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  async function proceedSubmit() {
+    const data = pendingData;
+    if (!data) return;
+
+    document.getElementById('confirm-view').classList.add('hidden');
+
+    if (REFILL_ENDPOINT) {
+      try {
+        await fetch(REFILL_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          mode: 'no-cors'   // 問診票と同じ fire-and-forget 方式
+        });
+      } catch (e) { console.warn('送信エラー:', e); }
+    } else {
+      console.log('REFILL_ENDPOINT 未設定。送信内容:', data);
+    }
+
+    // 完了画面へ
+    document.getElementById('form-view').classList.add('hidden');
+    document.getElementById('footer-nav').classList.add('hidden');
+    document.getElementById('done-view').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+</script>
+</body>
+</html>

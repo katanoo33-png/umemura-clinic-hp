@@ -7,7 +7,7 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 import { useState, useEffect, useRef, useCallback } from "react";
-import { LOGO, DEFAULT_IMAGES, SITE_DEFAULTS, CLINIC, LINE, DOCTORS, SERVICES, MEDICAL_ADDITIONS, BOOKING_URL } from "./siteConfig";
+import { LOGO, DEFAULT_IMAGES, SITE_DEFAULTS, CLINIC, LINE, DOCTORS, SERVICES, MEDICAL_ADDITIONS, BOOKING_URL, CONTACT_ENDPOINT } from "./siteConfig";
 import L from "leaflet";
 
 // ══════════════════════════════════════════════════════════
@@ -397,6 +397,21 @@ function Nav({ T, logo, activeSection, onOnlineClick, onPhoneClick }) {
             onMouseLeave={e => e.target.style.opacity = "1"}
             >{l.label}</a>
           ))}
+          <a className="nav-mens" href="/clinic/mens/" style={{
+            background: "transparent",
+            color: scrolled ? T.text : "rgba(255,255,255,.92)",
+            padding: "7px 12px",
+            borderRadius: 4,
+            border: `1px solid ${scrolled ? T.border : "rgba(255,255,255,.42)"}`,
+            fontFamily: T.sans,
+            fontSize: 12.5,
+            letterSpacing: .3,
+            textDecoration: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            whiteSpace: "nowrap",
+            flexShrink: 0,
+          }}>男性外来</a>
           <button className="nav-online" onClick={onOnlineClick} style={{
             background: scrolled ? "rgba(255,255,255,.78)" : "rgba(255,255,255,.92)",
             color: T.accent,
@@ -1193,13 +1208,39 @@ function InquirySection({ T }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("sending");
-    
-    // 実際の運用ではここでAPIを叩きます。
-    // 今回は送信完了のデモンストレーションとして、2秒後に成功状態へ移行させます。
-    setTimeout(() => {
+
+    const form = e.target;
+    const fd = new FormData(form);
+    const data = {
+      "受付日時":       new Date().toLocaleString("ja-JP"),
+      "お名前":         fd.get("name") || "",
+      "ふりがな":       fd.get("kana") || "",
+      "メールアドレス": fd.get("email") || "",
+      "電話番号":       fd.get("tel") || "",
+      "お問い合わせ種別": fd.get("category") || "",
+      "お問い合わせ内容": fd.get("message") || "",
+    };
+
+    if (!CONTACT_ENDPOINT) {
+      console.log("CONTACT_ENDPOINT 未設定。送信内容:", data);
       setStatus("success");
-      e.target.reset();
-    }, 2000);
+      form.reset();
+      return;
+    }
+
+    try {
+      await fetch(CONTACT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        mode: "no-cors",
+      });
+      setStatus("success");
+      form.reset();
+    } catch (err) {
+      console.warn("お問い合わせ送信エラー:", err);
+      setStatus("error");
+    }
   };
 
   const inputStyle = {
@@ -1250,6 +1291,14 @@ function InquirySection({ T }) {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} style={{ display: "grid", gap: 14 }}>
+                  {status === "error" && (
+                    <div style={{
+                      background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8,
+                      padding: "12px 14px", fontFamily: T.sans, fontSize: 13, color: "#b91c1c", lineHeight: 1.7,
+                    }}>
+                      送信に失敗しました。お手数ですがお電話（{CLINIC.tel}）にてお問い合わせください。
+                    </div>
+                  )}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     <label style={{ fontFamily: T.sans, fontSize: 12, color: T.textSub, display: "grid", gap: 7 }}>
                       お名前
@@ -2038,6 +2087,7 @@ export default function App() {
           .nav-links{gap:8px!important}
           .nav-online{padding:6px 10px!important;font-size:11.5px!important}
           .nav-booking{padding:6px 11px!important;font-size:11.5px!important}
+          .nav-mens{padding:6px 9px!important;font-size:11.5px!important}
           .line-widget{right:16px!important;top:auto!important;bottom:92px!important;transform:none!important}
           .online-grid{grid-template-columns:1fr!important;gap:16px!important}
           .visit-grid{grid-template-columns:1fr!important;gap:28px!important}

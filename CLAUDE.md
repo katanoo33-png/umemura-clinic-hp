@@ -57,3 +57,15 @@ src/
 1. `App.jsx` の末尾 `export default function App()` より前に、新しいコンポーネント関数を追加
 2. `App.jsx` の `<App>` 内の適切な位置にコンポーネントを挿入（str_replace）
 3. 設定が必要な場合は `siteConfig.js` に追記
+
+## セキュリティ注意事項
+
+### リンク先は必ず `/clinic/` にすること
+- `public/` 内のHTML（booking.html, line-add.html 等）の「サイトに戻る」リンクは `href="/clinic/"` を使う
+- **絶対に `href="/"` にしない** — VPSでは `/` がkatanolabポータル（Basic認証付き管理画面）に繋がるため、患者に内部システムが露出する
+- 2026-06-25修正: booking.html（4箇所）、line-add.html（1箇所）を `/clinic/` に修正済み
+
+### VPSデプロイ先
+- パス: `/var/www/clinic-hp/`
+- nginx: `https://katanolab.dev/clinic/` で配信
+- デプロイ: `scp -i ~/.ssh/id_ed25519 public/* root@163.44.99.17:/var/www/clinic-hp/`

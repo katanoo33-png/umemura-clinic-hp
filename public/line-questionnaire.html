@@ -106,6 +106,7 @@
             background-color: #f0fdfa !important;
             border-color: #0d9488 !important;
             color: #0d9488 !important;
+            box-shadow: 0 4px 14px rgba(13,148,136,.18);
         }
 
         input[type="range"] {
@@ -146,235 +147,16 @@
         .history-grid-btn:active { transform: scale(0.98); }
         .history-grid-btn.filled { border-color: #0d9488; background-color: #f0fdfa; color: #0d9488; }
 
-        /* ── マイナ保険証ガイドモーダル ── */
-        #myna-guide-modal {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.75); z-index: 2000;
-            align-items: flex-end; justify-content: center;
-            padding: 0;
-        }
-        #myna-guide-modal.active { display: flex; }
-        .guide-sheet {
-            width: 100%; max-width: 480px; background: #fff;
-            border-radius: 24px 24px 0 0; overflow: hidden;
-            max-height: 92vh; display: flex; flex-direction: column;
-            animation: slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        @keyframes slideUp { from { transform: translateY(100%); opacity:0; } to { transform: translateY(0); opacity:1; } }
-        .guide-top {
-            background: linear-gradient(135deg, #0f766e, #0d9488);
-            padding: 14px 20px 12px; display: flex; align-items: center; gap: 10px;
-        }
-        .guide-top h2 { color:#fff; font-size:14px; font-weight:700; flex:1; }
-        .guide-top .close-btn {
-            width:28px; height:28px; background:rgba(255,255,255,.2);
-            border-radius:50%; border:none; color:#fff; font-size:16px;
-            cursor:pointer; display:flex; align-items:center; justify-content:center;
-        }
-        .guide-step-bar {
-            display: flex; align-items: center; justify-content: center;
-            gap: 6px; padding: 10px 20px 8px; background: #f0fdfa;
-            border-bottom: 1px solid #ccfbf1;
-        }
-        .gsb-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: #99f6e4; transition: all 0.3s;
-        }
-        .gsb-dot.active { width: 24px; border-radius: 4px; background: #0d9488; }
-        .guide-content { flex: 1; overflow-y: auto; padding: 16px; }
-
-        /* スクリーンモック */
-        .screen-panel { display: none; animation: fadeIn 0.3s ease; }
-        .screen-panel.active { display: block; }
-        @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-        .phone-mock {
-            background: #fff; border: 1.5px solid #e2e8f0;
-            border-radius: 16px; overflow: hidden; margin-bottom: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,.1);
-        }
-        .phone-bar {
-            background: #1e293b; color: #94a3b8;
-            font-size: 9px; padding: 4px 12px;
-            display: flex; align-items: center; gap: 6px;
-        }
-        .phone-bar span { color: #64748b; }
-        .phone-bar .url { color: #22d3ee; font-size: 9px; }
-        .mock-row {
-            display: flex; justify-content: space-between; align-items: baseline;
-            padding: 8px 14px; border-bottom: 1px solid #f1f5f9;
-        }
-        .mock-row:last-child { border-bottom: none; }
-        .mock-label { font-size: 10px; color: #94a3b8; }
-        .mock-val { font-size: 13px; font-weight: 700; color: #1e293b; }
-        .mock-section {
-            font-size: 11px; font-weight: 700; color: #0f766e;
-            background: #f0fdfa; padding: 6px 14px;
-            border-bottom: 1px solid #ccfbf1;
-        }
-        .mock-highlight { background: #fef9c3; }
-        .mock-capture {
-            background: #0d9488; color: #fff;
-            text-align: center; padding: 10px;
-            font-size: 11px; font-weight: 700;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-        }
-
-        .guide-instruction {
-            background: #f0fdfa; border: 1px solid #99f6e4;
-            border-radius: 12px; padding: 10px 14px; margin-bottom: 12px;
-            font-size: 11px; color: #0f766e; line-height: 1.6;
-        }
-        .guide-instruction strong { color: #0f766e; font-size: 12px; }
-        .guide-nav {
-            display: flex; gap: 8px; padding: 12px 16px;
-            border-top: 1px solid #e2e8f0; background: #fff;
-        }
-        .guide-nav button {
-            flex: 1; padding: 10px; border-radius: 12px; border: none;
-            font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s;
-        }
-        .btn-prev { background: #f1f5f9; color: #64748b; }
-        .btn-prev:disabled { opacity: 0.35; cursor: not-allowed; }
-        .btn-next { background: #0d9488; color: #fff; }
-        .btn-next:hover { background: #0f766e; }
-        .btn-start-upload { background: #0d9488; color: #fff; display: none; }
-        .guide-counter { font-size: 11px; color: #94a3b8; text-align:center; padding-top:4px; }
     </style>
 </head>
 <body class="min-h-screen pb-32">
 
-<!-- ── マイナ保険証ガイドモーダル ──────────────────────── -->
-<div id="myna-guide-modal" onclick="if(event.target===this)closeMynaGuide()">
-  <div class="guide-sheet">
-    <div class="guide-top">
-      <span style="font-size:18px">📱</span>
-      <h2>マイナ保険証 スクリーンショットガイド</h2>
-      <button class="close-btn" onclick="closeMynaGuide()">✕</button>
-    </div>
-    <div class="guide-step-bar">
-      <div class="gsb-dot active" id="gsb1"></div>
-      <div class="gsb-dot" id="gsb2"></div>
-      <div class="gsb-dot" id="gsb3"></div>
-      <div class="gsb-dot" id="gsb4"></div>
-    </div>
-    <div class="guide-content" id="guide-content">
-
-      <!-- Step 0: 概要 -->
-      <div class="screen-panel active" id="gpanel-0">
-        <div class="guide-instruction">
-          <strong>📋 全体の流れ（全3スクリーンショット）</strong><br>
-          マイナポータルの「健康保険証情報」ページから<br>
-          スクロールしながら<strong>3枚スクリーンショット</strong>を撮影し、<br>
-          まとめてアップロードするとAIが自動で読み取ります。<br><br>
-          <span style="color:#64748b">※スクショが難しい場合は「手入力」でも入力できます。</span>
-        </div>
-        <div style="background:#fef9c3;border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:11px;color:#92400e;">
-          <strong>📌 マイナポータルの開き方</strong><br>
-          ① マイナポータルアプリを開く<br>
-          ② 「健康保険証」をタップ<br>
-          ③ 「資格情報」を開く<br>
-          ④ 次のページで説明する3ページを順番にスクショ
-        </div>
-      </div>
-
-      <!-- Step 1: スクショ1枚目 -->
-      <div class="screen-panel" id="gpanel-1">
-        <div class="guide-instruction">
-          <strong>📸 スクリーンショット 1枚目</strong><br>
-          ページ上部（記号・番号・氏名・生年月日・性別が見える部分）をスクショしてください。
-        </div>
-        <div class="phone-mock">
-          <div class="phone-bar">
-            <span>●●●</span>
-            <span class="url">myna.go.jp</span>
-          </div>
-          <div class="mock-section">健康保険証情報（資格情報）</div>
-          <div class="mock-row"><span class="mock-label">区分</span><span class="mock-val">一般</span></div>
-          <div class="mock-row mock-highlight"><span class="mock-label">記号 ★</span><span class="mock-val" style="color:#0d9488">○○○○</span></div>
-          <div class="mock-row mock-highlight"><span class="mock-label">番号 ★</span><span class="mock-val" style="color:#0d9488">○○○</span></div>
-          <div class="mock-row mock-highlight"><span class="mock-label">枝番 ★</span><span class="mock-val" style="color:#0d9488">○○</span></div>
-          <div class="mock-row"><span class="mock-label">フリガナ</span><span class="mock-val">○○ ○○</span></div>
-          <div class="mock-row"><span class="mock-label">氏名 ★</span><span class="mock-val" style="color:#0d9488">○○ ○○</span></div>
-          <div class="mock-row"><span class="mock-label">生年月日 ★</span><span class="mock-val" style="color:#0d9488">昭和○○年○月○日</span></div>
-          <div class="mock-row"><span class="mock-label">性別 ★</span><span class="mock-val" style="color:#0d9488">男 / 女</span></div>
-          <div class="mock-capture">📸 このページをスクリーンショット</div>
-        </div>
-      </div>
-
-      <!-- Step 2: スクショ2枚目 -->
-      <div class="screen-panel" id="gpanel-2">
-        <div class="guide-instruction">
-          <strong>📸 スクリーンショット 2枚目</strong><br>
-          下にスクロールして、保険者番号・保険者名が見える部分をスクショしてください。
-        </div>
-        <div class="phone-mock">
-          <div class="phone-bar">
-            <span>●●●</span>
-            <span class="url">myna.go.jp</span>
-          </div>
-          <div class="mock-section">（前のページから続き）</div>
-          <div class="mock-row"><span class="mock-label">資格取得年月日</span><span class="mock-val">令和○年○月○日</span></div>
-          <div class="mock-row"><span class="mock-label">被保険者氏名</span><span class="mock-val">○○ ○○</span></div>
-          <div class="mock-row"><span class="mock-label">本人・家族の別</span><span class="mock-val">本人</span></div>
-          <div class="mock-row mock-highlight"><span class="mock-label">保険者番号 ★</span><span class="mock-val" style="color:#0d9488">○○○○○○○○</span></div>
-          <div class="mock-row mock-highlight"><span class="mock-label">保険者名 ★</span><span class="mock-val" style="color:#0d9488">○○○○○○ 組合</span></div>
-          <div class="mock-capture">📸 このページをスクリーンショット</div>
-        </div>
-      </div>
-
-      <!-- Step 3: スクショ3枚目 -->
-      <div class="screen-panel" id="gpanel-3">
-        <div class="guide-instruction">
-          <strong>📸 スクリーンショット 3枚目</strong><br>
-          さらに下にスクロールして、限度額適用認定証の情報をスクショしてください。
-        </div>
-        <div class="phone-mock">
-          <div class="phone-bar">
-            <span>●●●</span>
-            <span class="url">myna.go.jp</span>
-          </div>
-          <div class="mock-section" style="font-size:12px;font-weight:700;color:#0f766e;padding:8px 14px;">限度額適用認定証関連の情報</div>
-          <div class="mock-row"><span class="mock-label">認定証区分</span><span class="mock-val">限度額適用認定証</span></div>
-          <div class="mock-row mock-highlight"><span class="mock-label">適用区分 ★</span><span class="mock-val" style="color:#0d9488">ア</span></div>
-          <div style="padding:10px 14px;font-size:10px;color:#94a3b8;line-height:1.5;">
-            ※適用区分が表示されていない場合もあります。<br>そのままスクショしてください。
-          </div>
-          <div class="mock-capture">📸 このページをスクリーンショット</div>
-        </div>
-        <div style="background:#f0fdfa;border-radius:12px;padding:10px 14px;font-size:11px;color:#0f766e;margin-top:4px;">
-          ✅ <strong>3枚揃ったら</strong>、ガイドを閉じて「マイナ保険証でかんたん入力」ボタンから3枚まとめてアップロードしてください。
-        </div>
-      </div>
-
-    </div><!-- /guide-content -->
-
-    <div class="guide-nav">
-      <button class="btn-prev" id="guide-prev" onclick="guideNav(-1)" disabled>← 前へ</button>
-      <div style="flex:1;text-align:center;">
-        <div class="guide-counter" id="guide-counter">概要</div>
-      </div>
-      <button class="btn-next" id="guide-next" onclick="guideNav(1)">次へ →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── Netlify Forms 検出用（非表示）──────────────────── -->
-<form name="questionnaire" netlify netlify-honeypot="bot-field" hidden>
-  <input name="bot-field" />
-  <input name="氏名" /><input name="フリガナ" />
-  <input name="生年月日" /><input name="性別" />
-  <input name="症状" /><input name="体温" /><input name="血圧" /><input name="脈拍" />
-  <textarea name="問診内容"></textarea>
-  <input name="既往歴" /><input name="内服中" /><input name="家族歴" /><input name="入院・手術歴" />
-  <textarea name="相談内容"></textarea><input name="治療希望" />
-</form>
-
     <!-- バリデーションアラート -->
-    <div id="validation-alert" class="hidden fixed top-5 left-1/2 -translate-x-1/2 z-[1000] w-[90%] max-w-md bg-red-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce">
-        <i data-lucide="alert-circle"></i>
-        <div class="text-sm font-bold">
+    <div id="validation-alert" class="hidden fixed top-5 inset-x-0 mx-auto z-[1000] w-[90%] max-w-md box-border bg-red-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce">
+        <i data-lucide="alert-circle" class="shrink-0"></i>
+        <div class="text-sm font-bold min-w-0">
             <p>必須項目を入力してください</p>
-            <p class="text-[10px] opacity-80 uppercase text-center">Please fill in required fields</p>
+            <p class="text-[10px] opacity-80 uppercase">Please fill in required fields</p>
         </div>
     </div>
 
@@ -414,82 +196,17 @@
                     <i data-lucide="credit-card" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
                     <div>
                         <p class="text-xs font-bold text-amber-800 mb-1">保険証のご準備をお願いします</p>
-                        <p class="text-[11px] text-amber-700 leading-relaxed">受診にあたり、<span class="font-bold">健康保険証またはマイナ保険証</span>のご準備をお願いします。写真を撮影するとお名前・生年月日が自動入力されます。</p>
+                        <p class="text-[11px] text-amber-700 leading-relaxed">受診にあたり、<span class="font-bold">健康保険証またはマイナ保険証</span>のご準備をお願いします。</p>
                     </div>
                 </div>
-                <p class="text-sm text-slate-600 mb-4 leading-relaxed">入力方法を選択してください。<br><span class="text-teal-600 font-bold">撮影・スキャンを利用すると入力が楽になります。</span></p>
+                <p class="text-sm text-slate-600 mb-4 leading-relaxed">以下のボタンから入力を開始してください。</p>
 
                 <!-- 基本入力方法 -->
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <button onclick="moveStep(1)" class="choice-card flex flex-col items-center justify-center p-6 bg-white border-2 border-slate-100 rounded-3xl shadow-sm hover:border-teal-500 transition-all">
-                        <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-500 mb-3"><i data-lucide="edit-3" class="w-8 h-8"></i></div>
-                        <p class="text-sm font-bold">手入力</p>
-                    </button>
-                    <button onclick="document.getElementById('doc_img').click()" class="choice-card flex flex-col items-center justify-center p-6 bg-white border-2 border-teal-100 rounded-3xl shadow-md hover:border-teal-500 transition-all relative overflow-hidden text-teal-600">
-                        <div id="ocr-loading" class="hidden absolute inset-0 bg-white/90 z-10 flex flex-col items-center justify-center"><div class="loader"></div></div>
-                        <div class="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center mb-3"><i data-lucide="camera" class="w-8 h-8"></i></div>
-                        <p class="text-sm font-bold">撮影して入力</p>
-                        <input type="file" id="doc_img" accept="image/*" class="hidden" onchange="handleOCR(this)">
-                    </button>
-                </div>
-
-                <!-- マイナ保険証 -->
-                <div class="w-full relative overflow-hidden mb-2">
-                    <div id="mynumber-loading" class="hidden absolute inset-0 bg-white/90 z-10 flex flex-col items-center justify-center gap-2 rounded-3xl">
-                        <div class="loader"></div>
-                        <p id="mynumber-loading-text" class="text-xs font-bold text-teal-600">3枚読み取り中...</p>
-                    </div>
-                    <button onclick="document.getElementById('mynumber_img').click()" class="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-teal-50 to-emerald-50 border-2 border-teal-300 rounded-3xl hover:border-teal-500 transition-all">
-                        <div class="w-10 h-10 bg-teal-100 rounded-2xl flex items-center justify-center text-teal-600 shrink-0"><i data-lucide="credit-card" class="w-5 h-5"></i></div>
-                        <div class="text-left flex-1 min-w-0">
-                            <p class="text-sm font-bold text-teal-700">マイナ保険証でかんたん入力</p>
-                            <p class="text-[10px] text-teal-500 mt-0.5">マイナポータルのスクリーンショット <span class="font-bold text-teal-700">3枚</span>をまとめて選択</p>
-                        </div>
-                        <div class="flex flex-col items-center gap-0.5 shrink-0">
-                            <div class="flex gap-0.5">
-                                <div class="w-5 h-7 bg-teal-200 rounded border border-teal-300 flex items-center justify-center text-[8px] font-bold text-teal-700">1</div>
-                                <div class="w-5 h-7 bg-teal-300 rounded border border-teal-400 flex items-center justify-center text-[8px] font-bold text-teal-800">2</div>
-                                <div class="w-5 h-7 bg-teal-500 rounded border border-teal-600 flex items-center justify-center text-[8px] font-bold text-white">3</div>
-                            </div>
-                            <p class="text-[8px] text-teal-500 font-bold">3枚選択</p>
-                        </div>
-                    </button>
-                    <!-- 選択済みインジケーター -->
-                    <div id="mynumber-selected-info" class="hidden mt-1.5 px-3 py-2 bg-teal-50 border border-teal-200 rounded-2xl flex items-center gap-2">
-                        <i data-lucide="check-circle" class="w-4 h-4 shrink-0"></i>
-                        <p id="mynumber-selected-text" class="text-[11px] font-bold"></p>
-                    </div>
-                    <input type="file" id="mynumber_img" accept="image/*" multiple class="hidden" onchange="handleMyNumber(this)">
-                </div>
-                <!-- 手入力案内 -->
-                <div class="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-2xl mb-4">
-                    <i data-lucide="info" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
-                    <p class="text-[10px] text-slate-400 leading-relaxed">スクショが難しい場合は上の<strong>「手入力」</strong>でも入力できます</p>
-                </div>
-
-                <!-- 解説動画 2×2 -->
                 <div class="mb-6">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">操作ガイド動画</p>
-                    <div class="grid grid-cols-2 gap-2">
-                        <!-- グレーアウト：準備中 -->
-                        <button disabled class="flex items-center gap-2 p-3 bg-slate-50 border border-slate-100 rounded-2xl text-left opacity-40 cursor-not-allowed" style="pointer-events:none;">
-                            <div class="w-8 h-8 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 shrink-0"><i data-lucide="play-circle" class="w-4 h-4"></i></div>
-                            <p class="text-[10px] font-bold text-slate-400 leading-tight">手入力<br>ガイド</p>
-                        </button>
-                        <button disabled class="flex items-center gap-2 p-3 bg-slate-50 border border-slate-100 rounded-2xl text-left opacity-40 cursor-not-allowed" style="pointer-events:none;">
-                            <div class="w-8 h-8 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 shrink-0"><i data-lucide="play-circle" class="w-4 h-4"></i></div>
-                            <p class="text-[10px] font-bold text-slate-400 leading-tight">撮影入力<br>ガイド</p>
-                        </button>
-                        <!-- アクティブ：マイナ保険証ガイド -->
-                        <button onclick="openMynaGuide()" class="flex items-center gap-2 p-3 bg-gradient-to-br from-teal-50 to-emerald-50 border border-teal-300 rounded-2xl hover:bg-teal-100 active:scale-95 transition-all text-left shadow-sm">
-                            <div class="w-8 h-8 bg-teal-500 rounded-xl flex items-center justify-center text-white shrink-0"><i data-lucide="play-circle" class="w-4 h-4"></i></div>
-                            <p class="text-[10px] font-bold text-teal-700 leading-tight">マイナ保険証<br>ガイド</p>
-                        </button>
-                        <button disabled class="flex items-center gap-2 p-3 bg-slate-50 border border-slate-100 rounded-2xl text-left opacity-40 cursor-not-allowed" style="pointer-events:none;">
-                            <div class="w-8 h-8 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 shrink-0"><i data-lucide="play-circle" class="w-4 h-4"></i></div>
-                            <p class="text-[10px] font-bold text-slate-400 leading-tight">問診票<br>全体ガイド</p>
-                        </button>
-                    </div>
+                    <button onclick="moveStep(1)" class="choice-card w-full flex items-center justify-center gap-3 p-5 bg-white border-2 border-teal-100 rounded-3xl shadow-sm hover:border-teal-500 transition-all">
+                        <div class="w-12 h-12 bg-teal-50 rounded-2xl flex items-center justify-center text-teal-600 shrink-0"><i data-lucide="edit-3" class="w-6 h-6"></i></div>
+                        <p class="text-sm font-bold">入力を始める</p>
+                    </button>
                 </div>
                 <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex gap-3 items-start">
                     <i data-lucide="shield-check" class="w-5 h-5 text-teal-600 shrink-0 mt-0.5"></i>
@@ -519,35 +236,35 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-500 mb-1">苗字 <span class="text-red-400">*</span></label>
-                                <input type="text" id="input_family" oninput="onNameInput(this,false)" placeholder="山田" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-sm">
+                                <input type="text" id="input_family" oninput="onNameInput(this,false)" placeholder="山田" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-base">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-500 mb-1">名前 <span class="text-red-400">*</span></label>
-                                <input type="text" id="input_given" oninput="onNameInput(this,false)" placeholder="太郎" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-sm">
+                                <input type="text" id="input_given" oninput="onNameInput(this,false)" placeholder="太郎" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-base">
                             </div>
                         </div>
                         <!-- カナ -->
                         <div class="grid grid-cols-2 gap-3 mt-3">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-500 mb-1">苗字（カナ）<span class="text-red-400">*</span></label>
-                                <input type="text" id="input_family_kana" oninput="onNameInput(this,true)" placeholder="ヤマダ" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-sm">
+                                <input type="text" id="input_family_kana" oninput="onNameInput(this,true)" placeholder="ヤマダ" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-base">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-500 mb-1">名前（カナ）<span class="text-red-400">*</span></label>
-                                <input type="text" id="input_given_kana" oninput="onNameInput(this,true)" placeholder="タロウ" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-sm">
+                                <input type="text" id="input_given_kana" oninput="onNameInput(this,true)" placeholder="タロウ" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-base">
                             </div>
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">生年月日 (Birth Date)</label>
-                        <input type="date" id="input_birthday" oninput="this.classList.remove('field-error'); updateAgeDisplay(this.value)" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-sm">
+                        <input type="date" id="input_birthday" value="1980-01-01" oninput="this.classList.remove('field-error'); updateAgeDisplay(this.value)" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none transition-all text-base shadow-sm" style="-webkit-appearance:none; appearance:none;">
                         <p id="age-display" class="hidden text-xs font-bold text-teal-600 mt-1 pl-1"></p>
                     </div>
                     <div id="gender-container">
                         <label class="block text-xs font-bold text-slate-700 mb-2">性別 (Gender)</label>
                         <div class="grid grid-cols-2 gap-3">
-                            <button id="gender-male" onclick="selectGender('male', this)" class="gender-btn py-3 rounded-xl border-2 border-slate-100 bg-white hover:bg-teal-50 transition-all text-xs font-bold">男性<br><span class="text-[9px] opacity-60">Male</span></button>
-                            <button id="gender-female" onclick="selectGender('female', this)" class="gender-btn py-3 rounded-xl border-2 border-slate-100 bg-white hover:bg-teal-50 transition-all text-xs font-bold">女性<br><span class="text-[9px] opacity-60">Female</span></button>
+                            <button id="gender-male" onclick="selectGender('male', this)" class="gender-btn py-4 rounded-xl border-2 border-slate-200 bg-white shadow-sm hover:border-teal-400 hover:shadow-md active:scale-95 transition-all text-sm font-bold">👨 男性<br><span class="text-[9px] opacity-60 font-normal">Male</span></button>
+                            <button id="gender-female" onclick="selectGender('female', this)" class="gender-btn py-4 rounded-xl border-2 border-slate-200 bg-white shadow-sm hover:border-teal-400 hover:shadow-md active:scale-95 transition-all text-sm font-bold">👩 女性<br><span class="text-[9px] opacity-60 font-normal">Female</span></button>
                         </div>
                     </div>
                 </div>
@@ -606,7 +323,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-2">相談内容 (Consultation)</label>
-                        <textarea id="input_free_consult" rows="2" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-sm" placeholder="気になる点があればご記入ください"></textarea>
+                        <textarea id="input_free_consult" rows="2" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-base" placeholder="気になる点があればご記入ください"></textarea>
                     </div>
                 </div>
             </div>
@@ -632,7 +349,7 @@
                 </div>
                 <div class="mb-6">
                     <label class="block text-xs font-bold text-slate-700 mb-2">回答 (Answer)</label>
-                    <textarea id="input_ai_answer" rows="3" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-sm" placeholder="回答を入力してください"></textarea>
+                    <textarea id="input_ai_answer" rows="3" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-base" placeholder="回答を入力してください"></textarea>
                 </div>
                 <div class="grid grid-cols-1 gap-3 pt-4 border-t border-slate-100">
                     <button onclick="openGenericModal('history')" id="btn-history" class="history-grid-btn"><span>既往歴 (Medical History)</span> <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
@@ -668,7 +385,7 @@
                     <div class="space-y-3">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">喫煙歴</label>
-                            <select id="input_smoking" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm">
+                            <select id="input_smoking" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-base">
                                 <option value="">選択してください</option>
                                 <option value="なし">吸わない（なし）</option>
                                 <option value="過去あり">過去に吸っていた（現在禁煙中）</option>
@@ -677,7 +394,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">飲酒歴</label>
-                            <select id="input_alcohol" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm">
+                            <select id="input_alcohol" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-base">
                                 <option value="">選択してください</option>
                                 <option value="飲まない">飲まない</option>
                                 <option value="機会飲酒">機会飲酒（月数回程度）</option>
@@ -772,12 +489,13 @@
                     <i data-lucide="send" class="w-12 h-12"></i>
                 </div>
                 <h2 class="text-2xl font-bold text-slate-800 mb-2">送信が完了しました</h2>
-                <p class="text-slate-500 font-bold mb-4">ありがとうございました</p>
+                <p id="done-subtitle" class="text-slate-500 font-bold mb-4">ありがとうございました</p>
                 <p class="text-sm text-slate-400 leading-relaxed mb-8">問診票の内容は当院の電子カルテへ安全に送信されました。</p>
                 <p id="redirect-countdown" class="text-xs text-slate-400 mb-3"></p>
-                <a href="booking.html" class="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white font-bold rounded-2xl shadow-lg hover:bg-teal-700 transition-colors text-sm">
-                    <i data-lucide="calendar" class="w-4 h-4"></i> オンライン診療の予約をする
+                <a href="/clinic/" class="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white font-bold rounded-2xl shadow-lg hover:bg-teal-700 transition-colors text-sm">
+                    <i data-lucide="home" class="w-4 h-4"></i> クリニックのサイトに戻る
                 </a>
+                <a id="done-booking-link" href="https://liff.line.me/2010663357-fZf1eaFF" class="block mt-4 text-[13px] text-slate-400 border-b border-dotted border-slate-300 w-fit pb-0.5">ご予約はこちら →</a>
             </div>
         </div>
     </div>
@@ -817,7 +535,7 @@
             <div id="g-modal-meds-note" class="hidden mt-3 pt-3 border-t border-slate-100">
                 <label class="block text-xs font-bold text-slate-600 mb-1">薬名を記入（任意）</label>
                 <p class="text-[10px] text-slate-400 mb-2">具体的な薬の名前があればご記入ください。</p>
-                <textarea id="g-modal-meds-input" rows="2" placeholder="例：アムロジピン、メトホルミンなど" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-xs resize-none"></textarea>
+                <textarea id="g-modal-meds-input" rows="2" placeholder="例：アムロジピン、メトホルミンなど" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all text-base resize-none"></textarea>
             </div>
             <button onclick="closeGenericModal()" class="w-full py-4 mt-4 bg-teal-600 text-white font-bold rounded-2xl shadow-lg">完了 (Done)</button>
         </div>
@@ -835,95 +553,10 @@
         lucide.createIcons();
         const GEMINI_PROXY_URL = 'https://katanolab.dev/api/gemini-ocr';
 
-        // ── Google Sheets 保存エンドポイント ──────────────────
-        // Google Apps Script を Web App としてデプロイ後、URLをここに設定してください
-        const SHEETS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzLwy1bMV3-idqJBYQ82vgKMWshNwDRWdZ1WBVu8S6TJ-cV5kXYlGiQ8UOoPtac9BGarw/exec';
-
-        // ── ガイドモーダル制御 ────────────────────────────────
-        let guideStep = 0;
-        const guideTotalSteps = 4; // 0:概要, 1,2,3:スクショ
-        function openMynaGuide() {
-            guideStep = 0;
-            renderGuideStep();
-            document.getElementById('myna-guide-modal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeMynaGuide() {
-            document.getElementById('myna-guide-modal').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        function guideNav(dir) {
-            guideStep = Math.max(0, Math.min(guideTotalSteps - 1, guideStep + dir));
-            renderGuideStep();
-        }
-        function renderGuideStep() {
-            for (let i = 0; i < guideTotalSteps; i++) {
-                const p = document.getElementById(`gpanel-${i}`);
-                if (p) p.classList.toggle('active', i === guideStep);
-            }
-            for (let i = 1; i < guideTotalSteps; i++) {
-                const d = document.getElementById(`gsb${i}`);
-                if (d) d.classList.toggle('active', i === guideStep);
-            }
-            document.getElementById('gsb1').classList.toggle('active', guideStep === 0);
-            document.getElementById('guide-prev').disabled = guideStep === 0;
-            const isLast = guideStep === guideTotalSteps - 1;
-            document.getElementById('guide-next').textContent = isLast ? '✕ 閉じる' : '次へ →';
-            if (isLast) document.getElementById('guide-next').onclick = closeMynaGuide;
-            else document.getElementById('guide-next').onclick = () => guideNav(1);
-            const labels = ['概要', 'スクショ 1/3', 'スクショ 2/3', 'スクショ 3/3'];
-            document.getElementById('guide-counter').textContent = labels[guideStep];
-            // Step バー
-            for (let i = 0; i < 4; i++) {
-                const d = document.getElementById(`gsb${i+1}`);
-                if (d) d.classList.toggle('active', i === guideStep);
-            }
-        }
-
-        // ── Google Sheets 保存 ───────────────────────────────
-        async function saveToSheets(data) {
-            if (!SHEETS_ENDPOINT) return; // 未設定なら何もしない
-            try {
-                await fetch(SHEETS_ENDPOINT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...data, 受付日時: new Date().toLocaleString('ja-JP') }),
-                    mode: 'no-cors'
-                });
-            } catch (e) { console.warn('Sheets保存エラー:', e); }
-        }
-
-        // ── ガイドページからのOCR自動入力（変数初期化後に実行） ─
-        function applyGuidePrefill() {
-            const raw = localStorage.getItem('umemura_ocr_prefill');
-            if (!raw) return;
-            localStorage.removeItem('umemura_ocr_prefill');
-            try {
-                const d = JSON.parse(raw);
-                if (d.氏名) {
-                    const np = d.氏名.trim().split(/[\s　]+/);
-                    document.getElementById('input_family').value = np[0] || '';
-                    document.getElementById('input_given').value = np.slice(1).join(' ') || '';
-                }
-                if (d.氏名カナ) {
-                    const kp = d.氏名カナ.trim().split(/[\s　]+/);
-                    document.getElementById('input_family_kana').value = kp[0] || '';
-                    document.getElementById('input_given_kana').value = kp.slice(1).join(' ') || '';
-                }
-                if (d.生年月日) {
-                    document.getElementById('input_birthday').value = d.生年月日;
-                    updateAgeDisplay(d.生年月日);
-                }
-                if (d.性別) {
-                    const g = d.性別.toLowerCase().includes('female') ? 'female' : 'male';
-                    selectGender(g, document.getElementById('gender-' + g));
-                }
-                document.getElementById('ai-status-badge').classList.remove('hidden');
-                moveStep(1); // Step 2 へ遷移
-            } catch(e) {}
-        }
-        // 変数・関数の初期化が完了してから実行
-        setTimeout(applyGuidePrefill, 0);
+        // ── 問診票本体 保存エンドポイント ──────────────────────
+        // 04_LINE-GAS連携/questionnaire-intake/Code.gs をデプロイして発行されたURLをここに設定してください。
+        // 未設定でも画面は動作します（送信内容はコンソールに出力）。
+        const QUESTIONNAIRE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbykq5cgiQwr73K7nI4YdtdZ7I4KyArkw4BpiYQOY_h4E5tkFbtOEs_yNZgwE-T6QMPI/exec';
 
         let currentStep = 1;
         const totalSteps = 6;
@@ -942,6 +575,36 @@
             hosp: { title: "入院・手術歴", en: "Hospitalization / Surgery", items: ["手術歴あり", "1年以内の入院", "骨折", "肺炎", "心臓・血管手術", "消化管手術", "整形外科手術", "その他"] }
         };
         formData.allergy = [];
+
+        // 予約フォームで入力済みの情報を引き継ぐ（予約→問診票の順で進む場合）
+        function applyBookingPrefill() {
+            const raw = localStorage.getItem('umemura_questionnaire_prefill');
+            if (!raw) return;
+            localStorage.removeItem('umemura_questionnaire_prefill');
+            try {
+                const d = JSON.parse(raw);
+                if (d.name) {
+                    const np = d.name.trim().split(/[\s　]+/);
+                    document.getElementById('input_family').value = np[0] || '';
+                    document.getElementById('input_given').value = np.slice(1).join(' ') || '';
+                }
+                if (d.kana) {
+                    const kp = d.kana.trim().split(/[\s　]+/);
+                    document.getElementById('input_family_kana').value = kp[0] || '';
+                    document.getElementById('input_given_kana').value = kp.slice(1).join(' ') || '';
+                }
+                if (d.dob) {
+                    document.getElementById('input_birthday').value = d.dob;
+                    updateAgeDisplay(d.dob);
+                }
+                if (d.gender) {
+                    selectGender(d.gender, document.getElementById('gender-' + d.gender));
+                }
+                document.getElementById('ai-status-badge').classList.remove('hidden');
+            } catch(e) { console.warn('booking prefill parse error', e); }
+        }
+        setTimeout(applyBookingPrefill, 0);
+        document.getElementById('input_birthday').max = new Date().toISOString().split('T')[0];
 
         async function callGemini(payload) {
             for (let i = 0; i < 3; i++) {
@@ -1002,40 +665,6 @@
             moveStep(1);
         }
 
-        async function handleOCR(input) {
-            if (!input.files[0]) return;
-            const file = input.files[0];
-            const mimeType = file.type || 'image/jpeg';
-            document.getElementById('ocr-loading').classList.remove('hidden');
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const base64 = e.target.result.split(',')[1];
-                const prompt = `この書類の画像から以下の情報をJSON形式のみで返してください（説明不要）:
-{"氏名":"苗字 名前（漢字、スペース区切り）","氏名カナ":"ミョウジ メイ（カタカナ、スペース区切り。不明なら空文字）","生年月日":"YYYY-MM-DD","性別":"male または female"}`;
-                try {
-                    const res = await callGemini({ contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType, data: base64 } }] }], generationConfig: { responseMimeType: "application/json" } });
-                    const d = JSON.parse(res.candidates[0].content.parts[0].text);
-                    if (d.氏名) {
-                        const np = d.氏名.trim().split(/[\s　]+/);
-                        document.getElementById('input_family').value = np[0] || '';
-                        document.getElementById('input_given').value = np.slice(1).join(' ') || '';
-                    }
-                    if (d.氏名カナ) {
-                        const kp = d.氏名カナ.trim().split(/[\s　]+/);
-                        document.getElementById('input_family_kana').value = kp[0] || '';
-                        document.getElementById('input_given_kana').value = kp.slice(1).join(' ') || '';
-                    }
-                    if (d.生年月日) { document.getElementById('input_birthday').value = d.生年月日; updateAgeDisplay(d.生年月日); }
-                    if (d.性別) {
-                        const g = d.性別.toLowerCase().includes('female') ? 'female' : 'male';
-                        selectGender(g, document.getElementById(`gender-${g}`));
-                    }
-                    document.getElementById('ai-status-badge').classList.remove('hidden');
-                    moveStep(1);
-                } catch (e) { moveStep(1); } finally { document.getElementById('ocr-loading').classList.add('hidden'); }
-            };
-            reader.readAsDataURL(file);
-        }
 
         async function generateQuestion() {
             const qJp = document.getElementById('ai-dynamic-question'), qEn = document.getElementById('ai-dynamic-question-en');
@@ -1157,29 +786,39 @@
         }
 
         function startRedirectCountdown() {
-            // 問診票データを予約フォーム引き継ぎ用に保存
-            try {
-                const family = document.getElementById('input_family')?.value || '';
-                const given  = document.getElementById('input_given')?.value  || '';
-                const famK   = document.getElementById('input_family_kana')?.value || '';
-                const givK   = document.getElementById('input_given_kana')?.value  || '';
-                localStorage.setItem('umemura_booking_prefill', JSON.stringify({
-                    name:   [family, given].filter(Boolean).join(' '),
-                    kana:   [famK, givK].filter(Boolean).join(' '),
-                    dob:    document.getElementById('input_birthday')?.value || '',
-                    gender: formData.gender || ''
-                }));
-                localStorage.setItem('umemura_from_questionnaire', '1');
-            } catch(e) { console.warn('prefill save error', e); }
+            // 予約側から来た場合（＝予約はすでに完了済み）: 二重案内を出さない
+            const bookingDone = localStorage.getItem('umemura_booking_done') === '1';
+            localStorage.removeItem('umemura_booking_done');
+            if (bookingDone) {
+                const link = document.getElementById('done-booking-link');
+                if (link) link.style.display = 'none';
+                const subtitle = document.getElementById('done-subtitle');
+                if (subtitle) subtitle.textContent = 'ご予約・問診票、どちらも受付が完了しました';
+            } else {
+                // 問診票データを予約フォーム引き継ぎ用に保存（問診票→予約の順で進む場合）
+                try {
+                    const family = document.getElementById('input_family')?.value || '';
+                    const given  = document.getElementById('input_given')?.value  || '';
+                    const famK   = document.getElementById('input_family_kana')?.value || '';
+                    const givK   = document.getElementById('input_given_kana')?.value  || '';
+                    localStorage.setItem('umemura_booking_prefill', JSON.stringify({
+                        name:   [family, given].filter(Boolean).join(' '),
+                        kana:   [famK, givK].filter(Boolean).join(' '),
+                        dob:    document.getElementById('input_birthday')?.value || '',
+                        gender: formData.gender || ''
+                    }));
+                    localStorage.setItem('umemura_from_questionnaire', '1');
+                } catch(e) { console.warn('prefill save error', e); }
+            }
 
             let secs = 5;
             const el = document.getElementById('redirect-countdown');
             if (!el) return;
-            el.textContent = `${secs} 秒後に自動で予約ページへ移動します`;
+            el.textContent = `${secs} 秒後にクリニックのサイトへ移動します`;
             const timer = setInterval(() => {
                 secs--;
-                if (secs <= 0) { clearInterval(timer); window.location.href = 'booking.html'; }
-                else { el.textContent = `${secs} 秒後に自動で予約ページへ移動します`; }
+                if (secs <= 0) { clearInterval(timer); window.location.href = '/clinic/'; }
+                else { el.textContent = `${secs} 秒後にクリニックのサイトへ移動します`; }
             }, 1000);
         }
 
@@ -1269,112 +908,6 @@
             el.classList.remove('hidden');
         }
 
-        // マイナ保険証処理（3枚対応）
-        async function handleMyNumber(input) {
-            if (!input.files || input.files.length === 0) return;
-            const selInfo = document.getElementById('mynumber-selected-info');
-            const selText = document.getElementById('mynumber-selected-text');
-            // 3枚未満は警告
-            if (input.files.length < 3) {
-                if (selInfo && selText) {
-                    selText.textContent = `${input.files.length}枚のみ選択。3枚まとめて選択してください（ガイドボタンで確認）`;
-                    selInfo.classList.remove('hidden', 'bg-teal-50', 'border-teal-200');
-                    selInfo.classList.add('bg-amber-50', 'border-amber-300');
-                    selText.classList.remove('text-teal-700');
-                    selText.classList.add('text-amber-700');
-                }
-                showAlert('スクリーンショット3枚をまとめて選択してください。\n（ガイドボタンで手順を確認できます）');
-                return;
-            }
-            // 3枚OK
-            if (selInfo && selText) {
-                selText.textContent = '3枚選択済み ✓ 読み取り中...';
-                selInfo.classList.remove('hidden', 'bg-amber-50', 'border-amber-300');
-                selInfo.classList.add('bg-teal-50', 'border-teal-200');
-                selText.classList.remove('text-amber-700');
-                selText.classList.add('text-teal-700');
-            }
-            const loadingEl = document.getElementById('mynumber-loading');
-            const loadingText = document.getElementById('mynumber-loading-text');
-            loadingEl.classList.remove('hidden');
-            if (loadingText) loadingText.textContent = '3枚読み取り中...';
-            const toBase64 = (file) => new Promise((resolve) => {
-                const r = new FileReader();
-                r.onload = (e) => resolve({ data: e.target.result.split(',')[1], mimeType: file.type || 'image/jpeg' });
-                r.readAsDataURL(file);
-            });
-            try {
-                const files = Array.from(input.files).slice(0, 3);
-                const base64arr = await Promise.all(files.map(toBase64));
-                const prompt = `これはマイナポータルの健康保険証情報ページのスクリーンショット（3枚）です。
-以下の全フィールドを必ずJSON形式のみで返してください（説明不要）:
-{
-  "氏名": "苗字 名前（漢字、スペース区切り）",
-  "氏名カナ": "ミョウジ メイ（カタカナ、スペース区切り。なければ空文字）",
-  "生年月日": "YYYY-MM-DD（和暦→西暦に変換。昭和50年=1975年）",
-  "性別": "male または female（男=male、女=female）",
-  "区分": "一般 等",
-  "記号": "保険証の記号",
-  "番号": "保険証の番号",
-  "枝番": "枝番（なければ空文字）",
-  "保険者番号": "8桁の数字",
-  "保険者名": "組合名・保険者名",
-  "適用区分": "限度額適用認定証の適用区分（なければ空文字）"
-}`;
-                const imageParts = base64arr.map(b => ({ inlineData: { mimeType: b.mimeType, data: b.data } }));
-                const res = await callGemini({
-                    contents: [{ parts: [{ text: prompt }, ...imageParts] }],
-                    generationConfig: { responseMimeType: "application/json" }
-                });
-                const d = JSON.parse(res.candidates[0].content.parts[0].text);
-                // 氏名（漢字）→ 苗字・名前に分割
-                if (d.氏名) {
-                    const np = d.氏名.trim().split(/[\s　]+/);
-                    document.getElementById('input_family').value = np[0] || '';
-                    document.getElementById('input_given').value = np.slice(1).join(' ') || '';
-                }
-                // フリガナ → 苗字カナ・名前カナに分割
-                if (d.氏名カナ) {
-                    const kp = d.氏名カナ.trim().split(/[\s　]+/);
-                    document.getElementById('input_family_kana').value = kp[0] || '';
-                    document.getElementById('input_given_kana').value = kp.slice(1).join(' ') || '';
-                }
-                // 生年月日
-                if (d.生年月日) {
-                    document.getElementById('input_birthday').value = d.生年月日;
-                    updateAgeDisplay(d.生年月日);
-                }
-                // 性別
-                if (d.性別) {
-                    const g = d.性別.toLowerCase().includes('female') ? 'female' : 'male';
-                    selectGender(g, document.getElementById(`gender-${g}`));
-                }
-                // 保険情報をGoogleスプレッドシートに保存
-                saveToSheets({
-                    氏名: d.氏名 || '',
-                    フリガナ: d.氏名カナ || '',
-                    生年月日: d.生年月日 || '',
-                    性別: d.性別 || '',
-                    区分: d.区分 || '',
-                    記号: d.記号 || '',
-                    番号: d.番号 || '',
-                    枝番: d.枝番 || '',
-                    保険者番号: d.保険者番号 || '',
-                    保険者名: d.保険者名 || '',
-                    適用区分: d.適用区分 || ''
-                });
-                if (selText) selText.textContent = '3枚読み取り完了 ✓';
-                document.getElementById('ai-status-badge').classList.remove('hidden');
-                moveStep(1);
-            } catch (e) {
-                console.error('マイナ保険証OCRエラー:', e);
-                showAlert('読み取りに失敗しました。手入力でご入力いただくか、もう一度お試しください。');
-                moveStep(1);
-            } finally {
-                loadingEl.classList.add('hidden');
-            }
-        }
-
         // ファイル添付
         function handleAttachment(input, key) {
             if (!input.files[0]) return;
@@ -1402,7 +935,7 @@
 
         updateStepper();
 
-        // ── 問診票メール送信（Netlify Forms）────────────────
+        // ── 問診票送信（questionnaire-intake GASへ no-cors POST）──
         async function submitQuestionnaire() {
             const sym  = formData.symptoms.map(x => `${x.part}: ${x.type}`).join(', ') || '未選択';
             const gl   = formData.gender === 'male' ? '男性' : (formData.gender === 'female' ? '女性' : 'その他');
@@ -1421,31 +954,36 @@
                 `自由記述: ${formData.free_consult || 'なし'}`,
             ].join('\n');
 
-            const body = new URLSearchParams({
-                'form-name':  'questionnaire',
-                'bot-field':  '',
-                '氏名':       name,
-                'フリガナ':   kana,
-                '生年月日':   formData.birthday || '',
-                '性別':       gl,
-                '症状':       sym,
-                '体温':       `${formData.temp}℃`,
-                '血圧':       `${formData.bp_sys}/${formData.bp_dia} mmHg`,
-                '脈拍':       `${formData.pulse} bpm`,
-                '問診内容':   mondai,
-                '既往歴':     formData.history.join('、') || 'なし',
-                '内服中':     (formData.meds.join('、') || 'なし') + (formData.medsNote ? `（${formData.medsNote}）` : ''),
-                '家族歴':     formData.family.join('、') || 'なし',
+            const data = {
+                種別:       '保険診療',
+                氏名:       name,
+                フリガナ:   kana,
+                生年月日:   formData.birthday || '',
+                性別:       gl,
+                症状:       sym,
+                体温:       `${formData.temp}℃`,
+                血圧:       `${formData.bp_sys}/${formData.bp_dia} mmHg`,
+                脈拍:       `${formData.pulse} bpm`,
+                問診内容:   mondai,
+                既往歴:     formData.history.join('、') || 'なし',
+                内服中:     (formData.meds.join('、') || 'なし') + (formData.medsNote ? `（${formData.medsNote}）` : ''),
+                家族歴:     formData.family.join('、') || 'なし',
                 '入院・手術歴': formData.hosp.join('、') || 'なし',
-                '相談内容':   formData.free_consult || 'なし',
-                '治療希望':   formData.treatment.join('・') || '未選択',
-            });
+                相談内容:   formData.free_consult || 'なし',
+                治療希望:   formData.treatment.join('・') || '未選択',
+                受付日時:   new Date().toLocaleString('ja-JP'),
+            };
 
+            if (!QUESTIONNAIRE_ENDPOINT) {
+                console.log('QUESTIONNAIRE_ENDPOINT 未設定。送信内容:', data);
+                return;
+            }
             try {
-                await fetch('/line-questionnaire.html', {
+                await fetch(QUESTIONNAIRE_ENDPOINT, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: body.toString(),
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                    mode: 'no-cors',
                 });
             } catch (e) {
                 console.warn('問診票送信エラー:', e);
