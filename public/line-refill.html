@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>お薬の継続希望 | うめむら半蔵門内科歯科</title>
 <meta name="robots" content="noindex, nofollow" />
 <script src="https://cdn.tailwindcss.com"></script>
@@ -17,6 +17,9 @@
   @keyframes spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
   .fade { animation: fadeIn 0.4s ease-out; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  /* iOSは16px未満の入力欄をタップすると自動ズームし、そのまま戻らなくなることがある。
+     maximum-scale/user-scalableに加えてフォントサイズ自体も16px以上にして防ぐ */
+  input, textarea, select { font-size: 16px !important; }
 </style>
 </head>
 <body class="min-h-screen pb-28">
@@ -127,14 +130,8 @@
       <p class="text-slate-500 font-bold mb-4">ありがとうございました</p>
       <p class="text-sm text-slate-400 leading-relaxed mb-8">スタッフが内容を確認し、お薬の準備や受診のご案内をLINEまたはお電話でご連絡いたします。</p>
 
-      <div class="w-full grid grid-cols-3 gap-2 mb-3">
-        <button onclick="window.close()" class="flex flex-col items-center gap-1 px-2 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-colors text-[11px]">
-          <i data-lucide="x" class="w-4 h-4"></i> 画面を閉じる
-        </button>
-        <a href="line://nv/chat" class="flex flex-col items-center gap-1 px-2 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-colors text-[11px]">
-          <i data-lucide="message-circle" class="w-4 h-4"></i> LINEに戻る
-        </a>
-        <a href="https://katanolab.dev/clinic/" class="flex flex-col items-center gap-1 px-2 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-colors text-[11px]">
+      <div class="w-full mb-3">
+        <a href="https://katanolab.dev/clinic/" class="flex items-center justify-center gap-2 px-2 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-colors text-sm">
           <i data-lucide="home" class="w-4 h-4"></i> ホームページ
         </a>
       </div>

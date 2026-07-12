@@ -412,6 +412,21 @@ function Nav({ T, logo, activeSection, onOnlineClick, onPhoneClick }) {
             whiteSpace: "nowrap",
             flexShrink: 0,
           }}>男性外来</a>
+          <a className="nav-womens" href="/clinic/womens/" style={{
+            background: "transparent",
+            color: scrolled ? T.text : "rgba(255,255,255,.92)",
+            padding: "7px 12px",
+            borderRadius: 4,
+            border: `1px solid ${scrolled ? T.border : "rgba(255,255,255,.42)"}`,
+            fontFamily: T.sans,
+            fontSize: 12.5,
+            letterSpacing: .3,
+            textDecoration: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            whiteSpace: "nowrap",
+            flexShrink: 0,
+          }}>女性外来</a>
           <button className="nav-online" onClick={onOnlineClick} style={{
             background: scrolled ? "rgba(255,255,255,.78)" : "rgba(255,255,255,.92)",
             color: T.accent,
@@ -2088,6 +2103,7 @@ export default function App() {
           .nav-online{padding:6px 10px!important;font-size:11.5px!important}
           .nav-booking{padding:6px 11px!important;font-size:11.5px!important}
           .nav-mens{padding:6px 9px!important;font-size:11.5px!important}
+          .nav-womens{padding:6px 9px!important;font-size:11.5px!important}
           .line-widget{right:16px!important;top:auto!important;bottom:92px!important;transform:none!important}
           .online-grid{grid-template-columns:1fr!important;gap:16px!important}
           .visit-grid{grid-template-columns:1fr!important;gap:28px!important}
