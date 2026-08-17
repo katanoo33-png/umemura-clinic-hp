@@ -69,3 +69,21 @@ src/
 - パス: `/var/www/clinic-hp/`
 - nginx: `https://katanolab.dev/clinic/` で配信
 - デプロイ: `scp -i ~/.ssh/id_ed25519 public/* root@163.44.99.17:/var/www/clinic-hp/`
+
+### booking.htmlのLIFF連携（2026-08-12修正）
+- ホームページ本体の「予約する」ボタン（`App.jsx`の`BOOKING_URL`＝`siteConfig.js`）は、LIFF URL
+  （`https://liff.line.me/2010663357-fZf1eaFF`）ではなく通常の`booking.html`を直接指している。
+  そのため、LINEアプリ内でこのボタン経由で開いた場合でも、以前は`liff.isLoggedIn()`が自動でtrueに
+  ならず、LINE UserIDが記録されないことがあった（既存の予約データ、全13件でLINE UserID列が
+  空欄だったことから発覚）。
+- 対応: `booking.html`の`initLiff()`に`liff.isInClient()`判定を追加し、LINEアプリ内で開かれているのに
+  未ログインの場合だけ`liff.login()`を呼ぶように修正。通常の外部ブラウザ（LINEアプリ外）からの
+  アクセス時は従来通り何もしない＝予約自体は引き続き誰でも可能（LINE非利用者の導線は変更していない）。
+  「予約する」ボタン自体をLIFF URLへ変更する対応（案2）は見送り、この方式（案1）を採用。
+- 動作確認: `?debug=1`をURLに付けると画面上部にLIFF初期化状況が表示される診断コードを
+  一時的に追加済み（`DEBUG_MODE`・`renderLiffDebugBanner_()`）。通常アクセスには影響しない。
+  不要になれば削除してよい。
+- 34_メール配信基盤（旧34_SendGridメール配信）の将来のLINE化構想の検証を兼ねて、この機会に
+  API2（`@434xzywa`）のpush送信テストも実施・成功を確認した（テスト用関数
+  `testSendLinePushToSelf`/`_v2`/`_Debug`を、`予約」シートを参照する別GASプロジェクト
+  （1日前/1時間前リマインド用）に追加。本番の`checkReminders`等は無変更）。

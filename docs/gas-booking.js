@@ -174,3 +174,17 @@ function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify({ status: 'ok' }))
     .setMimeType(ContentService.MimeType.JSON);
 }
+
+// ── テスト用（2026-08-12追加）: 既知のLINE UserIDへpush送信を試す ──────────
+// doPost・本番の予約フローには一切影響しない、独立したテスト関数。手動実行のみ。
+// userIdは予約シート（SPREADSHEET_ID）の参照タブに記録されている梅村隆輔氏のIDを使用。
+// 34_メール配信基盤（処方箋期限・当日患者リストの自分宛て通知）の将来のLINE化構想の
+// 動作確認用。
+function testSendLinePushToSelf() {
+  const testUserId = 'U6258dd9738ef8ed37ec168b8e5fd14fa'; // 梅村隆輔
+  sendLinePush_(
+    testUserId,
+    '【テスト】34_メール配信基盤 LINE連携テストです。このメッセージが届いていれば、任意のLINE UserID宛てにpush送信できることを確認できました。'
+  );
+  Logger.log('LINE pushテスト送信を実行しました。実際に届いたかはLINEアプリ側で確認してください。');
+}

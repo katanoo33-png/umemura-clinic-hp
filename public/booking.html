@@ -286,22 +286,72 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbzwlBRAHPiIQeUTuIWgw5Zb
 
 // ── LIFF（LINEユーザーID取得）─────────────────────────────
 // LINE Developers Console で発行したLIFF IDをここに設定してください。
-// 未設定時・LINE外ブラウザからのアクセス時は lineUserId が空のまま送信されます
-// （＝予約確定メッセージ・リマインド配信は対象外になります）。
+// LINEアプリ内（isInClient）で開かれているのにログイン状態でない場合は、2026-08-12から
+// liff.login()で明示的にログインを要求するようにした（HP本体の「予約する」ボタンがLIFF URLでは
+// なく通常の/booking.htmlを指しているため、LINEアプリ内で開いてもこれまではLINE UserIDが
+// 記録されないケースがあった）。LINEアプリ外の通常ブラウザからのアクセス時は今まで通り何もせず、
+// lineUserId は空のまま送信される（＝予約確定メッセージ・リマインド配信は対象外。予約自体は
+// 引き続き誰でも可能で、この挙動は変更していない）。
 const LIFF_ID = '2010663357-fZf1eaFF';
 let lineUserId = '';
 
+// ── 一時診断用（2026-08-12追加）: URLに ?debug=1 が付いている時だけ、
+// LIFFの初期化状況を画面上に表示する。通常のアクセスには一切影響しない。
+// 原因調査が終わったら、このブロックとrenderLiffDebugBanner_()ごと削除してよい。
+const DEBUG_MODE = new URLSearchParams(location.search).get('debug') === '1';
+
+function renderLiffDebugBanner_(info) {
+  if (!DEBUG_MODE) return;
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#111;color:#0f0;' +
+    'font:11px/1.5 monospace;padding:8px;white-space:pre-wrap;word-break:break-all;';
+  el.textContent = 'LIFF DEBUG\n' + JSON.stringify(info, null, 2);
+  document.body.appendChild(el);
+}
+
 async function initLiff() {
-  if (!LIFF_ID || typeof liff === 'undefined') return;
+  const info = {
+    liffIdSet: !!LIFF_ID,
+    sdkLoaded: typeof liff !== 'undefined',
+    initOk: false,
+    isInClient: null,
+    isLoggedIn: null,
+    loginRedirected: false,
+    profileOk: false,
+    lineUserId: '',
+    error: null,
+  };
+
+  if (!LIFF_ID || typeof liff === 'undefined') {
+    renderLiffDebugBanner_(info);
+    return;
+  }
   try {
     await liff.init({ liffId: LIFF_ID });
-    if (liff.isLoggedIn()) {
+    info.initOk = true;
+    info.isInClient = liff.isInClient();
+    info.isLoggedIn = liff.isLoggedIn();
+
+    // LINEアプリ内で開かれているのにログイン状態でない場合だけ、明示的にログインを要求する
+    // （通常のブラウザから開いた場合は何もしない＝予約自体はこれまで通り誰でも可能）
+    if (info.isInClient && !info.isLoggedIn) {
+      info.loginRedirected = true;
+      renderLiffDebugBanner_(info);
+      liff.login({ redirectUri: location.href });
+      return; // login()はページ遷移を伴うため、ここで処理を終える
+    }
+
+    if (info.isLoggedIn) {
       const profile = await liff.getProfile();
       lineUserId = profile.userId || '';
+      info.profileOk = true;
+      info.lineUserId = lineUserId;
     }
   } catch (e) {
     console.warn('LIFF初期化エラー:', e);
+    info.error = (e && e.message) ? e.message : String(e);
   }
+  renderLiffDebugBanner_(info);
 }
 initLiff();
 
