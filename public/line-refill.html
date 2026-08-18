@@ -113,6 +113,24 @@
         <p class="text-[10px] text-slate-400 mb-2">お薬手帳の名前や、普段もらっているお薬名をご記入ください。分かる範囲で構いません。</p>
         <textarea id="in_meds" rows="3" placeholder="例：アムロジピン、メトホルミン　など" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm resize-none" oninput="this.classList.remove('field-error')"></textarea>
       </div>
+    </div>
+
+    <!-- 新しく飲みたいお薬（履歴にない・今回から希望する薬） -->
+    <div class="glass-card rounded-3xl p-6 shadow-xl space-y-4 mt-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-2">新しく希望されるお薬 <span class="text-slate-400 font-normal">(任意)</span></label>
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 flex gap-2 items-start">
+          <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+          <p class="text-[11px] text-amber-700 leading-relaxed">この内容は医師が診察時に改めて確認します。わかる範囲でご記入ください。</p>
+        </div>
+      </div>
+      <div id="new-drug-rows" class="space-y-3"></div>
+      <button type="button" onclick="addNewDrugRow()" id="btn-add-newdrug" class="w-full py-2.5 rounded-xl border border-dashed border-teal-300 text-teal-600 text-xs font-bold active:scale-95 transition-all flex items-center justify-center gap-1">
+        <i data-lucide="plus" class="w-3.5 h-3.5"></i> 薬を追加
+      </button>
+    </div>
+
+    <div class="glass-card rounded-3xl p-6 shadow-xl space-y-5 mt-4">
       <!-- 希望来院日 -->
       <div>
         <label class="block text-xs font-bold text-slate-700 mb-1">希望される来院日 <span class="text-slate-400 font-normal">(任意)</span></label>
@@ -284,6 +302,61 @@
       .map(row => ({ drug: row.dataset.drug, days: parseInt(row.querySelector('.med-days').textContent, 10) }));
   }
 
+  // ── 新しく希望するお薬（履歴にない薬）の繰り返し行 ─────────────
+  const MAX_NEW_DRUG_ROWS = 5;
+
+  function addNewDrugRow() {
+    const wrap = document.getElementById('new-drug-rows');
+    if (wrap.children.length >= MAX_NEW_DRUG_ROWS) {
+      showAlert('お薬の追加は' + MAX_NEW_DRUG_ROWS + '件までです');
+      return;
+    }
+    const row = document.createElement('div');
+    row.className = 'new-drug-row p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-2';
+    row.innerHTML = `
+      <div class="flex items-center gap-2">
+        <input type="text" placeholder="お薬の名前" class="nd-name flex-1 min-w-0 px-3 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm">
+        <button type="button" onclick="removeNewDrugRow(this)" class="w-9 h-9 shrink-0 rounded-full bg-white border border-slate-200 text-slate-400 font-bold active:scale-90">×</button>
+      </div>
+      <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex items-center gap-1 shrink-0">
+          <span class="text-[10px] text-slate-400 shrink-0">1回</span>
+          <button type="button" onclick="stepNdCount(this,-1)" class="w-7 h-7 rounded-full bg-white border border-slate-200 text-teal-600 font-bold active:scale-90">−</button>
+          <span class="w-8 text-center text-sm font-bold nd-count">1</span>
+          <button type="button" onclick="stepNdCount(this,1)" class="w-7 h-7 rounded-full bg-white border border-slate-200 text-teal-600 font-bold active:scale-90">＋</button>
+          <span class="text-[10px] text-slate-400 shrink-0">錠</span>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          ${['朝', '昼', '晩', '寝る前'].map(t => `
+            <label class="flex items-center gap-1">
+              <input type="checkbox" value="${t}" class="nd-timing w-4 h-4 accent-teal-600">
+              <span class="text-xs text-slate-600">${t}</span>
+            </label>`).join('')}
+        </div>
+      </div>`;
+    wrap.appendChild(row);
+  }
+
+  function removeNewDrugRow(btn) {
+    btn.closest('.new-drug-row').remove();
+  }
+
+  function stepNdCount(btn, delta) {
+    const span = btn.parentElement.querySelector('.nd-count');
+    const next = Math.min(10, Math.max(1, parseInt(span.textContent, 10) + delta));
+    span.textContent = next;
+  }
+
+  function collectNewDrugs() {
+    return Array.from(document.querySelectorAll('#new-drug-rows .new-drug-row'))
+      .map(row => ({
+        drug: row.querySelector('.nd-name').value.trim(),
+        count: parseInt(row.querySelector('.nd-count').textContent, 10),
+        timing: Array.from(row.querySelectorAll('.nd-timing:checked')).map(cb => cb.value)
+      }))
+      .filter(r => r.drug);
+  }
+
   // ── ステップ1: 本人確認 → 照合 → ステップ2（お薬選択）へ ─────
   async function submitIdentity() {
     const family = document.getElementById('in_family');
@@ -336,6 +409,7 @@
       freetextLabel.innerHTML = '継続を希望されるお薬 <span class="text-red-400">*</span>';
     }
     renderMedsChecklist(result.prescriptions);
+    if (!document.getElementById('new-drug-rows').children.length) addNewDrugRow();
 
     currentStep = 'meds';
     document.getElementById('identity-view').classList.add('hidden');
@@ -365,8 +439,9 @@
   async function submitMeds() {
     const drugs = collectCheckedDrugs();
     const freetext = document.getElementById('in_meds').value.trim();
+    const newDrugs = collectNewDrugs();
 
-    if (!drugs.length && !freetext) {
+    if (!drugs.length && !freetext && !newDrugs.length) {
       showAlert('お薬をチェックするか、欄にご記入ください');
       document.getElementById('in_meds').classList.add('field-error');
       return;
@@ -379,6 +454,7 @@
       電話番号: identity ? identity['電話番号'] : '',
       drugs: drugs,
       希望のお薬: freetext,
+      新規薬剤希望: newDrugs,
       希望来院日: document.getElementById('in_visit').value || '',
       連絡事項: document.getElementById('in_note').value.trim(),
       受付日時: new Date().toLocaleString('ja-JP'),
