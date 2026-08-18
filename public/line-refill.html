@@ -60,18 +60,14 @@
 
     <!-- 入力項目 -->
     <div class="glass-card rounded-3xl p-6 shadow-xl space-y-5">
-      <!-- 氏名 -->
-      <div>
-        <label class="block text-xs font-bold text-slate-700 mb-2">お名前 <span class="text-red-400">*</span></label>
-        <div class="grid grid-cols-2 gap-3">
-          <input type="text" id="in_family" placeholder="姓（山田）" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
-          <input type="text" id="in_given" placeholder="名（太郎）" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
-        </div>
-      </div>
       <!-- 生年月日 -->
       <div>
-        <label class="block text-xs font-bold text-slate-700 mb-1">生年月日 <span class="text-red-400">*</span> <span class="text-[10px] text-slate-400 font-normal">本人確認のため</span></label>
-        <input type="date" id="in_birthday" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
+        <label class="block text-xs font-bold text-slate-700 mb-2">生年月日 <span class="text-red-400">*</span> <span class="text-[10px] text-slate-400 font-normal">本人確認のため</span></label>
+        <div class="grid grid-cols-3 gap-2">
+          <select id="in_birth_y" class="w-full px-2 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" onchange="this.classList.remove('field-error')"></select>
+          <select id="in_birth_m" class="w-full px-2 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" onchange="this.classList.remove('field-error')"></select>
+          <select id="in_birth_d" class="w-full px-2 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" onchange="this.classList.remove('field-error')"></select>
+        </div>
       </div>
       <!-- 電話番号 -->
       <div>
@@ -86,6 +82,39 @@
       <p class="text-[10px] text-slate-500 leading-relaxed">営業時間内に順次確認いたします。営業時間外の場合は翌診療日以降のご連絡となります。</p>
       <div class="bg-red-50 border border-red-100 rounded-xl p-3 mt-1">
         <p class="text-[10px] text-red-600 font-bold leading-relaxed">🚨 体調が急変した場合や緊急の際は、このフォームではなく受付（080-2127-3696）へお電話、または救急（#7119）をご利用ください。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- お名前確認（生年月日だけで候補が0件/2件以上だった場合、または確認画面で「いいえ」を選んだ場合のみ表示） -->
+  <div id="name-view" class="hidden fade">
+    <div class="glass-card rounded-3xl p-5 shadow-xl border-t-4 border-teal-500 mb-4">
+      <p class="text-sm text-slate-600 leading-relaxed">お名前もご確認させてください。</p>
+    </div>
+    <div class="glass-card rounded-3xl p-6 shadow-xl space-y-5">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-2">お名前 <span class="text-red-400">*</span></label>
+        <div class="grid grid-cols-2 gap-3">
+          <input type="text" id="in_family" placeholder="姓（山田）" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
+          <input type="text" id="in_given" placeholder="名（太郎）" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 生年月日から候補が1名見つかった場合の確認画面 -->
+  <div id="confirm-view" class="hidden fade">
+    <div class="glass-card rounded-3xl p-8 shadow-xl text-center flex flex-col items-center justify-center min-h-[50vh]">
+      <div class="w-20 h-20 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mb-6"><i data-lucide="user-check" class="w-10 h-10"></i></div>
+      <h2 class="text-xl font-bold text-slate-800 mb-3"><span id="confirm-name" class="text-teal-600"></span> 様でお間違いありませんか？</h2>
+      <p class="text-xs text-slate-400 leading-relaxed mb-8">ご入力いただいた生年月日から、当院に登録されているお名前を確認しました。</p>
+      <div class="w-full space-y-3">
+        <button onclick="confirmYes()" class="w-full py-3.5 rounded-2xl font-bold text-sm text-white bg-teal-600 shadow-lg shadow-teal-200 active:scale-95 transition-all flex items-center justify-center gap-2">
+          <i data-lucide="check" class="w-4 h-4"></i> はい、間違いありません
+        </button>
+        <button onclick="confirmNo()" class="w-full py-3.5 rounded-2xl font-bold text-sm text-slate-600 bg-slate-100 active:scale-95 transition-all">
+          いいえ、お名前を入力する
+        </button>
       </div>
     </div>
   </div>
@@ -224,11 +253,25 @@
   }
 
   // ── 状態 ──────────────────────────────────────────────
-  let currentStep = 'identity'; // 'identity' | 'meds'
-  let identity = null;          // { 氏名, 生年月日, 電話番号 }
-  let matchedPatient = null;    // { id, name, line_user_id } | null
+  let currentStep = 'birth'; // 'birth' | 'name' | 'meds'（confirmは専用ボタンで遷移するためcurrentStepを持たない）
+  let birthValue = '';       // 'YYYY-MM-DD'
+  let telValue = '';
+  let nameValue = '';        // name-viewで入力された場合のみセット
+  let candidateToConfirm = null; // 生年月日のみで候補が1名だった場合の { id, name }
+  let matchedPatient = null; // { id, name, line_user_id } | null
 
-  // ── 06_処方箋モニタリングとの照合 ─────────────────────────
+  // ── 生年月日セレクトの選択肢を生成（本日から100年分。iPhoneではネイティブのホイール操作になる） ──
+  function populateBirthSelects() {
+    const y = document.getElementById('in_birth_y');
+    const m = document.getElementById('in_birth_m');
+    const d = document.getElementById('in_birth_d');
+    const thisYear = new Date().getFullYear();
+    y.innerHTML = '<option value="">年</option>' + Array.from({ length: 100 }, (_, i) => thisYear - i).map(v => `<option value="${v}">${v}</option>`).join('');
+    m.innerHTML = '<option value="">月</option>' + Array.from({ length: 12 }, (_, i) => i + 1).map(v => `<option value="${v}">${v}</option>`).join('');
+    d.innerHTML = '<option value="">日</option>' + Array.from({ length: 31 }, (_, i) => i + 1).map(v => `<option value="${v}">${v}</option>`).join('');
+  }
+
+  // ── 06_処方箋モニタリングとの照合（氏名+生年月日/電話番号、またはLINE UserIdでの照合） ─────
   async function matchPatient(payload) {
     if (!REFILL_ENDPOINT) return { matched: false };
     try {
@@ -240,6 +283,38 @@
       return await res.json();
     } catch (e) {
       console.warn('患者照合エラー（未照合のまま続行します）:', e);
+      return { matched: false };
+    }
+  }
+
+  // ── 生年月日のみでの候補検索（新フロー: 氏名より先に生年月日で照合する） ─────────────
+  async function searchByBirth(payload) {
+    if (!REFILL_ENDPOINT) return { candidates: [] };
+    try {
+      const res = await fetch(REFILL_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'searchByBirth', ...payload })
+      });
+      return await res.json();
+    } catch (e) {
+      console.warn('生年月日照合エラー:', e);
+      return { candidates: [] };
+    }
+  }
+
+  // ── 確認画面「はい」後の本確定（電話番号の書き込み＋処方履歴取得） ─────────────────
+  async function confirmPatientApi(payload) {
+    if (!REFILL_ENDPOINT) return { matched: false };
+    try {
+      const res = await fetch(REFILL_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'confirmPatient', ...payload })
+      });
+      return await res.json();
+    } catch (e) {
+      console.warn('confirmPatientエラー:', e);
       return { matched: false };
     }
   }
@@ -357,38 +432,98 @@
       .filter(r => r.drug);
   }
 
-  // ── ステップ1: 本人確認 → 照合 → ステップ2（お薬選択）へ ─────
-  async function submitIdentity() {
-    const family = document.getElementById('in_family');
-    const given  = document.getElementById('in_given');
-    const birth  = document.getElementById('in_birthday');
-    const tel    = document.getElementById('in_tel');
-
-    let bad = [];
-    [family, given, birth, tel].forEach(el => { if (!el.value.trim()) { el.classList.add('field-error'); bad.push(el); } });
-    if (bad.length) { showAlert('必須項目（*）をご入力ください'); bad[0].scrollIntoView({behavior:'smooth',block:'center'}); return; }
-
-    identity = {
-      氏名: family.value.trim() + ' ' + given.value.trim(),
-      生年月日: birth.value,
-      電話番号: tel.value.trim(),
-    };
-
-    await goToMedsStep(identity);
+  const ALL_VIEWS = ['identity-view', 'name-view', 'confirm-view', 'meds-view'];
+  function showView(id) {
+    ALL_VIEWS.forEach(v => document.getElementById(v).classList.toggle('hidden', v !== id));
+    window.scrollTo(0, 0);
   }
 
-  // ── 患者照合を行い、お薬選択ステップへ切り替える（LIFF自動認識・手入力どちらからも呼ぶ） ──
-  async function goToMedsStep(identityPayload) {
+  // ── ステップ1: 生年月日+電話番号 → 生年月日だけで候補検索 ─────────────────
+  async function submitBirth() {
+    const y = document.getElementById('in_birth_y');
+    const m = document.getElementById('in_birth_m');
+    const d = document.getElementById('in_birth_d');
+    const tel = document.getElementById('in_tel');
+
+    let bad = [];
+    [y, m, d, tel].forEach(el => { if (!el.value || !String(el.value).trim()) { el.classList.add('field-error'); bad.push(el); } });
+    if (bad.length) { showAlert('必須項目（*）をご入力ください'); bad[0].scrollIntoView({behavior:'smooth',block:'center'}); return; }
+
+    birthValue = `${y.value}-${String(m.value).padStart(2, '0')}-${String(d.value).padStart(2, '0')}`;
+    telValue = tel.value.trim();
+
     const btn = document.getElementById('btn-submit');
     btn.disabled = true;
-    btn.innerHTML = '<span class="loader"></span> 照合中...';
+    btn.innerHTML = '<span class="loader"></span> 確認中...';
 
-    const result = await matchPatient({ ...identityPayload, lineUserId });
+    const result = await searchByBirth({ birth: birthValue });
 
     btn.disabled = false;
     lucide.createIcons();
 
-    matchedPatient = result.matched ? result.patient : null;
+    const candidates = (result && result.candidates) || [];
+    if (candidates.length === 1) {
+      candidateToConfirm = candidates[0];
+      document.getElementById('confirm-name').textContent = candidateToConfirm.name;
+      document.getElementById('footer-nav').classList.add('hidden'); // 確認画面は専用ボタンを使う
+      showView('confirm-view');
+    } else {
+      // 0件（新患の可能性）・2件以上（同じ誕生日の方が複数）はいずれもお名前を追加確認する
+      currentStep = 'name';
+      updatePrimaryButton();
+      showView('name-view');
+    }
+  }
+
+  // ── お名前確認 → 氏名+生年月日+電話番号で照合 → お薬選択へ ─────────────────
+  async function submitName() {
+    const family = document.getElementById('in_family');
+    const given  = document.getElementById('in_given');
+
+    let bad = [];
+    [family, given].forEach(el => { if (!el.value.trim()) { el.classList.add('field-error'); bad.push(el); } });
+    if (bad.length) { showAlert('お名前をご入力ください'); bad[0].scrollIntoView({behavior:'smooth',block:'center'}); return; }
+
+    nameValue = family.value.trim() + ' ' + given.value.trim();
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loader"></span> 照合中...';
+
+    const result = await matchPatient({ 氏名: nameValue, 生年月日: birthValue, 電話番号: telValue, lineUserId });
+
+    btn.disabled = false;
+    lucide.createIcons();
+
+    enterMedsView(result.matched ? result.patient : null, result.prescriptions);
+  }
+
+  // ── 確認画面「はい」: 電話番号を書き込みつつ処方履歴を取得してお薬選択へ ──────────
+  async function confirmYes() {
+    document.querySelectorAll('#confirm-view button').forEach(b => b.disabled = true);
+
+    const result = await confirmPatientApi({ patientId: candidateToConfirm.id, phone: telValue });
+
+    if (result && result.matched) {
+      enterMedsView(result.patient, result.prescriptions);
+    } else {
+      console.warn('confirmPatient失敗。候補情報のみでお薬選択へ進みます。');
+      enterMedsView(candidateToConfirm, []);
+    }
+  }
+
+  // ── 確認画面「いいえ」: お名前を追加確認する画面へ戻す ──────────────────────
+  function confirmNo() {
+    candidateToConfirm = null;
+    currentStep = 'name';
+    updatePrimaryButton();
+    document.getElementById('footer-nav').classList.remove('hidden');
+    showView('name-view');
+  }
+
+  // ── 照合結果を反映してお薬選択ステップへ切り替える（共通処理） ──────────────────
+  function enterMedsView(patient, prescriptions) {
+    matchedPatient = patient || null;
 
     const greeting = document.getElementById('meds-greeting');
     const historyNote = document.getElementById('meds-history-note');
@@ -396,7 +531,7 @@
 
     if (matchedPatient) {
       greeting.textContent = (matchedPatient.name || '') + ' 様、こんにちは。';
-      if (result.prescriptions && result.prescriptions.length) {
+      if (prescriptions && prescriptions.length) {
         historyNote.textContent = '前回までのお薬から、継続を希望されるものを選んでください。リストにないお薬は下の欄にご記入ください。';
         freetextLabel.innerHTML = '上記にないお薬 <span class="text-slate-400 font-normal">(任意)</span>';
       } else {
@@ -408,28 +543,29 @@
       historyNote.textContent = '';
       freetextLabel.innerHTML = '継続を希望されるお薬 <span class="text-red-400">*</span>';
     }
-    renderMedsChecklist(result.prescriptions);
+    renderMedsChecklist(prescriptions);
     if (!document.getElementById('new-drug-rows').children.length) addNewDrugRow();
 
     currentStep = 'meds';
-    document.getElementById('identity-view').classList.add('hidden');
-    document.getElementById('meds-view').classList.remove('hidden');
+    document.getElementById('footer-nav').classList.remove('hidden');
     updatePrimaryButton();
-    window.scrollTo(0, 0);
+    showView('meds-view');
   }
 
   function updatePrimaryButton() {
     const btn = document.getElementById('btn-submit');
-    btn.innerHTML = currentStep === 'identity'
-      ? '<i data-lucide="arrow-right" class="w-4 h-4"></i> 次へ（お薬の選択）'
-      : '<i data-lucide="send" class="w-4 h-4"></i> この内容で送信する';
+    btn.innerHTML = currentStep === 'meds'
+      ? '<i data-lucide="send" class="w-4 h-4"></i> この内容で送信する'
+      : '<i data-lucide="arrow-right" class="w-4 h-4"></i> 次へ';
     lucide.createIcons();
   }
 
   // ── フッターボタンのディスパッチャ ────────────────────────
   async function primaryAction() {
-    if (currentStep === 'identity') {
-      await submitIdentity();
+    if (currentStep === 'birth') {
+      await submitBirth();
+    } else if (currentStep === 'name') {
+      await submitName();
     } else {
       await submitMeds();
     }
@@ -449,9 +585,9 @@
 
     const data = {
       種別: '処方継続希望',
-      氏名: identity ? identity['氏名'] : (matchedPatient ? matchedPatient.name : ''),
-      生年月日: identity ? identity['生年月日'] : '',
-      電話番号: identity ? identity['電話番号'] : '',
+      氏名: matchedPatient ? matchedPatient.name : nameValue,
+      生年月日: birthValue,
+      電話番号: telValue,
       drugs: drugs,
       希望のお薬: freetext,
       新規薬剤希望: newDrugs,
@@ -486,17 +622,16 @@
   }
 
   // ── 初期化: LIFFでLINE UserIdが取れた場合は自動照合し、
-  //    一致すれば本人確認フォームを飛ばしてお薬選択画面から始める ──
+  //    一致すれば生年月日入力を飛ばしてお薬選択画面から始める ──
   (async function boot() {
+    populateBirthSelects();
     await initLiff();
     if (lineUserId) {
-      await goToMedsStep({});
-      if (!matchedPatient) {
-        // UserIdだけでは未紐づけ（初回）→ 通常の本人確認フォームに戻す
-        currentStep = 'identity';
-        document.getElementById('meds-view').classList.add('hidden');
-        document.getElementById('identity-view').classList.remove('hidden');
+      const result = await matchPatient({ lineUserId });
+      if (result.matched) {
+        enterMedsView(result.patient, result.prescriptions);
       }
+      // UserIdだけでは未紐づけ（初回）の場合は何もせず、既定表示の生年月日入力画面のまま進める
     }
     updatePrimaryButton();
   })();
