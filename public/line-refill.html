@@ -63,9 +63,25 @@
 
     <!-- 入力項目 -->
     <div class="glass-card rounded-3xl p-6 shadow-xl space-y-5">
+      <!-- お名前（漢字） -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-2">お名前（漢字） <span class="text-red-400">*</span></label>
+        <div class="grid grid-cols-2 gap-3">
+          <input type="text" id="in_family" placeholder="姓（山田）" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
+          <input type="text" id="in_given" placeholder="名（太郎）" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
+        </div>
+      </div>
+      <!-- お名前（カナ） -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-2">お名前（カナ） <span class="text-red-400">*</span></label>
+        <div class="grid grid-cols-2 gap-3">
+          <input type="text" id="in_family_kana" placeholder="セイ（ヤマダ）" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
+          <input type="text" id="in_given_kana" placeholder="メイ（タロウ）" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
+        </div>
+      </div>
       <!-- 生年月日 -->
       <div>
-        <label class="block text-xs font-bold text-slate-700 mb-2">生年月日 <span class="text-red-400">*</span> <span class="text-[10px] text-slate-400 font-normal">本人確認のため</span></label>
+        <label class="block text-xs font-bold text-slate-700 mb-2">生年月日 <span class="text-red-400">*</span></label>
         <div class="grid grid-cols-3 gap-2">
           <select id="in_birth_y" class="w-full px-2 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" onchange="this.classList.remove('field-error')"></select>
           <select id="in_birth_m" class="w-full px-2 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" onchange="this.classList.remove('field-error')"></select>
@@ -74,7 +90,7 @@
       </div>
       <!-- 電話番号 -->
       <div>
-        <label class="block text-xs font-bold text-slate-700 mb-1">電話番号 <span class="text-red-400">*</span> <span class="text-[10px] text-slate-400 font-normal">ご連絡用</span></label>
+        <label class="block text-xs font-bold text-slate-700 mb-1">電話番号 <span class="text-red-400">*</span></label>
         <input type="tel" id="in_tel" placeholder="090-1234-5678" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
       </div>
     </div>
@@ -89,28 +105,12 @@
     </div>
   </div>
 
-  <!-- お名前確認（生年月日だけで候補が0件/2件以上だった場合、または確認画面で「いいえ」を選んだ場合のみ表示） -->
-  <div id="name-view" class="hidden fade">
-    <div class="glass-card rounded-3xl p-5 shadow-xl border-t-4 border-teal-500 mb-4">
-      <p class="text-sm text-slate-600 leading-relaxed">お名前もご確認させてください。</p>
-    </div>
-    <div class="glass-card rounded-3xl p-6 shadow-xl space-y-5">
-      <div>
-        <label class="block text-xs font-bold text-slate-700 mb-2">お名前 <span class="text-red-400">*</span></label>
-        <div class="grid grid-cols-2 gap-3">
-          <input type="text" id="in_family" placeholder="姓（山田）" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
-          <input type="text" id="in_given" placeholder="名（太郎）" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm" oninput="this.classList.remove('field-error')">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 生年月日から候補が1名見つかった場合の確認画面 -->
+  <!-- 入力した氏名+生年月日から患者マスタと一致した場合の確認画面 -->
   <div id="confirm-view" class="hidden fade">
     <div class="glass-card rounded-3xl p-8 shadow-xl text-center flex flex-col items-center justify-center min-h-[50vh]">
       <div class="w-20 h-20 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mb-6"><i data-lucide="user-check" class="w-10 h-10"></i></div>
       <h2 class="text-xl font-bold text-slate-800 mb-3"><span id="confirm-name" class="text-teal-600"></span> 様でお間違いありませんか？</h2>
-      <p class="text-xs text-slate-400 leading-relaxed mb-8">ご入力いただいた生年月日から、当院に登録されているお名前を確認しました。</p>
+      <p class="text-xs text-slate-400 leading-relaxed mb-8">ご入力いただいた内容から、当院に登録されている患者様と一致しました。</p>
       <div class="w-full space-y-3">
         <button onclick="confirmYes()" class="w-full py-3.5 rounded-2xl font-bold text-sm text-white bg-teal-600 shadow-lg shadow-teal-200 active:scale-95 transition-all flex items-center justify-center gap-2">
           <i data-lucide="check" class="w-4 h-4"></i> はい、間違いありません
@@ -260,11 +260,12 @@
   }
 
   // ── 状態 ──────────────────────────────────────────────
-  let currentStep = 'birth'; // 'birth' | 'name' | 'meds'（confirmは専用ボタンで遷移するためcurrentStepを持たない）
+  let currentStep = 'identity'; // 'identity' | 'meds'（confirmは専用ボタンで遷移するためcurrentStepを持たない）
   let birthValue = '';       // 'YYYY-MM-DD'
   let telValue = '';
-  let nameValue = '';        // name-viewで入力された場合のみセット
-  let candidateToConfirm = null; // 生年月日のみで候補が1名だった場合の { id, name }
+  let nameValue = '';
+  let nameKanaValue = '';
+  let pendingMatchResult = null; // 照合で一致した場合の { matched, patient, prescriptions }（確認画面表示中に保持）
   let matchedPatient = null; // { id, name, line_user_id } | null
 
   // ── 生年月日セレクトの選択肢を生成（本日から100年分。iPhoneではネイティブのホイール操作になる） ──
@@ -290,38 +291,6 @@
       return await res.json();
     } catch (e) {
       console.warn('患者照合エラー（未照合のまま続行します）:', e);
-      return { matched: false };
-    }
-  }
-
-  // ── 生年月日のみでの候補検索（新フロー: 氏名より先に生年月日で照合する） ─────────────
-  async function searchByBirth(payload) {
-    if (!REFILL_ENDPOINT) return { candidates: [] };
-    try {
-      const res = await fetch(REFILL_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'searchByBirth', ...payload })
-      });
-      return await res.json();
-    } catch (e) {
-      console.warn('生年月日照合エラー:', e);
-      return { candidates: [] };
-    }
-  }
-
-  // ── 確認画面「はい」後の本確定（電話番号の書き込み＋処方履歴取得） ─────────────────
-  async function confirmPatientApi(payload) {
-    if (!REFILL_ENDPOINT) return { matched: false };
-    try {
-      const res = await fetch(REFILL_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'confirmPatient', ...payload })
-      });
-      return await res.json();
-    } catch (e) {
-      console.warn('confirmPatientエラー:', e);
       return { matched: false };
     }
   }
@@ -451,23 +420,31 @@
       .filter(r => r.drug);
   }
 
-  const ALL_VIEWS = ['identity-view', 'name-view', 'confirm-view', 'meds-view'];
+  const ALL_VIEWS = ['identity-view', 'confirm-view', 'meds-view'];
   function showView(id) {
     ALL_VIEWS.forEach(v => document.getElementById(v).classList.toggle('hidden', v !== id));
     window.scrollTo(0, 0);
   }
 
-  // ── ステップ1: 生年月日+電話番号 → 生年月日だけで候補検索 ─────────────────
-  async function submitBirth() {
+  // ── ステップ1: お名前（漢字・カナ）+生年月日+電話番号 → まとめて照合 ─────────────
+  async function submitIdentity() {
+    const family = document.getElementById('in_family');
+    const given  = document.getElementById('in_given');
+    const familyKana = document.getElementById('in_family_kana');
+    const givenKana  = document.getElementById('in_given_kana');
     const y = document.getElementById('in_birth_y');
     const m = document.getElementById('in_birth_m');
     const d = document.getElementById('in_birth_d');
     const tel = document.getElementById('in_tel');
 
     let bad = [];
-    [y, m, d, tel].forEach(el => { if (!el.value || !String(el.value).trim()) { el.classList.add('field-error'); bad.push(el); } });
+    [family, given, familyKana, givenKana, y, m, d, tel].forEach(el => {
+      if (!el.value || !String(el.value).trim()) { el.classList.add('field-error'); bad.push(el); }
+    });
     if (bad.length) { showAlert('必須項目（*）をご入力ください'); bad[0].scrollIntoView({behavior:'smooth',block:'center'}); return; }
 
+    nameValue = family.value.trim() + ' ' + given.value.trim();
+    nameKanaValue = familyKana.value.trim() + ' ' + givenKana.value.trim();
     birthValue = `${y.value}-${String(m.value).padStart(2, '0')}-${String(d.value).padStart(2, '0')}`;
     telValue = tel.value.trim();
 
@@ -475,69 +452,33 @@
     btn.disabled = true;
     btn.innerHTML = '<span class="loader"></span> 確認中...';
 
-    const result = await searchByBirth({ birth: birthValue });
+    const result = await matchPatient({ 氏名: nameValue, 氏名カナ: nameKanaValue, 生年月日: birthValue, 電話番号: telValue, lineUserId });
 
     btn.disabled = false;
     lucide.createIcons();
 
-    const candidates = (result && result.candidates) || [];
-    if (candidates.length === 1) {
-      candidateToConfirm = candidates[0];
-      document.getElementById('confirm-name').textContent = candidateToConfirm.name;
+    if (result.matched) {
+      // 氏名+生年月日はご本人が入力済みなので、ここでは念のための最終確認として表示する
+      // （照合・電話番号やLINE連携の書き込みはmatchPatient呼び出し時点で完了済み）
+      pendingMatchResult = result;
+      document.getElementById('confirm-name').textContent = result.patient.name;
       document.getElementById('footer-nav').classList.add('hidden'); // 確認画面は専用ボタンを使う
       showView('confirm-view');
     } else {
-      // 0件（新患の可能性）・2件以上（同じ誕生日の方が複数）はいずれもお名前を追加確認する
-      currentStep = 'name';
-      updatePrimaryButton();
-      showView('name-view');
+      enterMedsView(null, []);
     }
   }
 
-  // ── お名前確認 → 氏名+生年月日+電話番号で照合 → お薬選択へ ─────────────────
-  async function submitName() {
-    const family = document.getElementById('in_family');
-    const given  = document.getElementById('in_given');
-
-    let bad = [];
-    [family, given].forEach(el => { if (!el.value.trim()) { el.classList.add('field-error'); bad.push(el); } });
-    if (bad.length) { showAlert('お名前をご入力ください'); bad[0].scrollIntoView({behavior:'smooth',block:'center'}); return; }
-
-    nameValue = family.value.trim() + ' ' + given.value.trim();
-
-    const btn = document.getElementById('btn-submit');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="loader"></span> 照合中...';
-
-    const result = await matchPatient({ 氏名: nameValue, 生年月日: birthValue, 電話番号: telValue, lineUserId });
-
-    btn.disabled = false;
-    lucide.createIcons();
-
-    enterMedsView(result.matched ? result.patient : null, result.prescriptions);
+  // ── 確認画面「はい」: 照合済みの結果でそのままお薬選択へ ──────────────────────
+  function confirmYes() {
+    enterMedsView(pendingMatchResult.patient, pendingMatchResult.prescriptions);
   }
 
-  // ── 確認画面「はい」: 電話番号を書き込みつつ処方履歴を取得してお薬選択へ ──────────
-  async function confirmYes() {
-    document.querySelectorAll('#confirm-view button').forEach(b => b.disabled = true);
-
-    const result = await confirmPatientApi({ patientId: candidateToConfirm.id, phone: telValue, lineUserId });
-
-    if (result && result.matched) {
-      enterMedsView(result.patient, result.prescriptions);
-    } else {
-      console.warn('confirmPatient失敗。候補情報のみでお薬選択へ進みます。');
-      enterMedsView(candidateToConfirm, []);
-    }
-  }
-
-  // ── 確認画面「いいえ」: お名前を追加確認する画面へ戻す ──────────────────────
+  // ── 確認画面「いいえ」: 入力内容を見直せるよう本人確認画面へ戻す（入力値は保持） ──────
   function confirmNo() {
-    candidateToConfirm = null;
-    currentStep = 'name';
-    updatePrimaryButton();
+    pendingMatchResult = null;
     document.getElementById('footer-nav').classList.remove('hidden');
-    showView('name-view');
+    showView('identity-view');
   }
 
   // ── 照合結果を反映してお薬選択ステップへ切り替える（共通処理） ──────────────────
@@ -591,10 +532,8 @@
 
   // ── フッターボタンのディスパッチャ ────────────────────────
   async function primaryAction() {
-    if (currentStep === 'birth') {
-      await submitBirth();
-    } else if (currentStep === 'name') {
-      await submitName();
+    if (currentStep === 'identity') {
+      await submitIdentity();
     } else {
       await submitMeds();
     }
@@ -615,6 +554,7 @@
     const data = {
       種別: '処方継続希望',
       氏名: matchedPatient ? matchedPatient.name : nameValue,
+      氏名カナ: nameKanaValue,
       生年月日: birthValue,
       電話番号: telValue,
       drugs: drugs,
