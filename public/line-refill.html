@@ -18,6 +18,9 @@
   @keyframes spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
   .fade { animation: fadeIn 0.4s ease-out; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  /* 本人確認済みの合図（軽量なCSSアニメーション。外部GIFは使わない） */
+  @keyframes celebratePop { 0%{transform:scale(0) rotate(-15deg);opacity:0} 60%{transform:scale(1.35) rotate(10deg);opacity:1} 100%{transform:scale(1) rotate(0);opacity:1} }
+  .celebrate-pop { display:inline-block; animation: celebratePop 0.6s cubic-bezier(.34,1.56,.64,1); }
   /* iOSは16px未満の入力欄をタップすると自動ズームし、そのまま戻らなくなることがある。
      maximum-scale/user-scalableに加えてフォントサイズ自体も16px以上にして防ぐ */
   input, textarea, select { font-size: 16px !important; }
@@ -121,10 +124,14 @@
 
   <!-- お薬選択（本人確認後に表示） -->
   <div id="meds-view" class="hidden fade">
-    <div class="glass-card rounded-3xl p-5 shadow-xl border-t-4 border-teal-500 mb-4">
-      <p class="text-sm text-slate-600 leading-relaxed">
-        <span id="meds-greeting" class="font-bold text-teal-700"></span>
-      </p>
+    <div id="meds-greeting-card" class="glass-card rounded-3xl p-5 shadow-xl border-t-4 border-teal-500 mb-4">
+      <div class="flex items-center gap-2 flex-wrap">
+        <span id="meds-greeting-icon" class="hidden celebrate-pop text-xl">🎉</span>
+        <p class="text-sm text-slate-600 leading-relaxed flex-1 min-w-0">
+          <span id="meds-greeting" class="font-bold text-teal-700"></span>
+        </p>
+        <span id="meds-verified-badge" class="hidden text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold shrink-0">✓ 本人確認済み</span>
+      </div>
       <p id="meds-history-note" class="text-[11px] text-slate-400 mt-1 leading-relaxed"></p>
     </div>
 
@@ -342,7 +349,7 @@
       row.innerHTML = `
         <label class="flex items-center gap-2 flex-1 min-w-0">
           <input type="checkbox" class="med-check w-5 h-5 accent-teal-600 shrink-0" onchange="onMedCheckToggle(this)">
-          <span class="text-sm font-bold text-slate-700 truncate">${drugName}</span>
+          <span class="text-sm font-bold text-slate-700 truncate drug-name" onclick="toggleDrugNameExpand(event, this)">${drugName}</span>
         </label>
         <div class="flex items-center gap-1 shrink-0 med-stepper opacity-40 pointer-events-none transition-opacity">
           <button type="button" onclick="stepDays(this,-1)" class="w-8 h-8 rounded-full bg-white border border-slate-200 text-teal-600 font-bold active:scale-90">−</button>
@@ -354,6 +361,18 @@
     });
 
     wrap.classList.remove('hidden');
+  }
+
+  // 薬名が長くて省略（...）されている場合、タップで全文表示に切り替える
+  // （ラベル内のタップはチェックボックスも反応してしまうため、ここで止める）
+  function toggleDrugNameExpand(event, span) {
+    event.preventDefault();
+    event.stopPropagation();
+    span.classList.toggle('truncate');
+    span.classList.toggle('whitespace-normal');
+    const row = span.closest('[data-drug]');
+    row.classList.toggle('items-start');
+    row.classList.toggle('items-center');
   }
 
   function onMedCheckToggle(checkbox) {
@@ -502,7 +521,7 @@
   async function confirmYes() {
     document.querySelectorAll('#confirm-view button').forEach(b => b.disabled = true);
 
-    const result = await confirmPatientApi({ patientId: candidateToConfirm.id, phone: telValue });
+    const result = await confirmPatientApi({ patientId: candidateToConfirm.id, phone: telValue, lineUserId });
 
     if (result && result.matched) {
       enterMedsView(result.patient, result.prescriptions);
@@ -528,9 +547,16 @@
     const greeting = document.getElementById('meds-greeting');
     const historyNote = document.getElementById('meds-history-note');
     const freetextLabel = document.getElementById('meds-freetext-label');
+    const greetingCard = document.getElementById('meds-greeting-card');
+    const greetingIcon = document.getElementById('meds-greeting-icon');
+    const verifiedBadge = document.getElementById('meds-verified-badge');
 
     if (matchedPatient) {
       greeting.textContent = (matchedPatient.name || '') + ' 様、こんにちは。';
+      // 本人確認済みであることが一目で分かるよう、カードの色とバッジ・簡易アニメーションで演出する
+      greetingCard.classList.replace('border-teal-500', 'border-amber-400');
+      greetingIcon.classList.remove('hidden');
+      verifiedBadge.classList.remove('hidden');
       if (prescriptions && prescriptions.length) {
         historyNote.textContent = '前回までのお薬から、継続を希望されるものを選んでください。リストにないお薬は下の欄にご記入ください。';
         freetextLabel.innerHTML = '上記にないお薬 <span class="text-slate-400 font-normal">(任意)</span>';
@@ -540,6 +566,9 @@
       }
     } else {
       greeting.textContent = 'ご入力ありがとうございます。';
+      greetingCard.classList.replace('border-amber-400', 'border-teal-500');
+      greetingIcon.classList.add('hidden');
+      verifiedBadge.classList.add('hidden');
       historyNote.textContent = '';
       freetextLabel.innerHTML = '継続を希望されるお薬 <span class="text-red-400">*</span>';
     }
