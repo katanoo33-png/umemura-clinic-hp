@@ -130,7 +130,7 @@
         <p class="text-sm text-slate-600 leading-relaxed flex-1 min-w-0">
           <span id="meds-greeting" class="font-bold text-teal-700"></span>
         </p>
-        <span id="meds-verified-badge" class="hidden text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold shrink-0">✓ 本人確認済み</span>
+        <span id="meds-verified-badge" class="hidden text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold shrink-0">✓ 本人確認済み</span>
       </div>
       <p id="meds-history-note" class="text-[11px] text-slate-400 mt-1 leading-relaxed"></p>
     </div>
@@ -552,9 +552,9 @@
     const verifiedBadge = document.getElementById('meds-verified-badge');
 
     if (matchedPatient) {
-      greeting.textContent = (matchedPatient.name || '') + ' 様、こんにちは。';
+      greeting.textContent = (matchedPatient.name || '') + ' 様';
       // 本人確認済みであることが一目で分かるよう、カードの色とバッジ・簡易アニメーションで演出する
-      greetingCard.classList.replace('border-teal-500', 'border-amber-400');
+      greetingCard.classList.replace('border-teal-500', 'border-green-400');
       greetingIcon.classList.remove('hidden');
       verifiedBadge.classList.remove('hidden');
       if (prescriptions && prescriptions.length) {
@@ -566,7 +566,7 @@
       }
     } else {
       greeting.textContent = 'ご入力ありがとうございます。';
-      greetingCard.classList.replace('border-amber-400', 'border-teal-500');
+      greetingCard.classList.replace('border-green-400', 'border-teal-500');
       greetingIcon.classList.add('hidden');
       verifiedBadge.classList.add('hidden');
       historyNote.textContent = '';
